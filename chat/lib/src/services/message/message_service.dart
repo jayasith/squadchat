@@ -1,23 +1,26 @@
 import 'dart:async';
 import 'package:chat/src/models/message.dart';
 import 'package:chat/src/models/user.dart';
+import 'package:chat/src/services/encryption/encryption_service.dart';
 import 'package:chat/src/services/message/message_service_contract.dart';
 import 'package:rethinkdb_dart/rethinkdb_dart.dart';
 
 class MessageService implements IMessageService {
   final Rethinkdb rethinkdb;
   final Connection _connection;
+  final EncryptionService _encryptionService;
+
   final _controller = StreamController<Message>.broadcast();
   StreamSubscription _changefeed;
 
-  MessageService(this.rethinkdb, this._connection);
+  MessageService(this.rethinkdb, this._connection, this._encryptionService);
 
   @override
   Future<bool> send(Message message) async {
-    Map record = await rethinkdb
-        .table('messages')
-        .insert(message.toJson())
-        .run(_connection);
+    final data = message.toJson();
+    data['contents'] = _encryptionService.encrypt(data['contents']);
+    Map record =
+        await rethinkdb.table('messages').insert(data).run(_connection);
     return record['inserted'] == 1;
   }
 
@@ -55,7 +58,10 @@ class MessageService implements IMessageService {
   }
 
   Message messageFromFeed(feedData) {
-    return Message.fromJson(feedData['new_val']);
+    final data = feedData['new_val'];
+    data['contents'] = _encryptionService.decrypt(data['contents']);
+
+    return Message.fromJson(data);
   }
 
   void _removeDeliveredMessage(Message message) {
