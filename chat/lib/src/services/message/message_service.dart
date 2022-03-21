@@ -1,17 +1,16 @@
 import 'dart:async';
+import 'package:chat/src/models/message.dart';
+import 'package:chat/src/models/user.dart';
+import 'package:chat/src/services/message/message_service_contract.dart';
 import 'package:rethinkdb_dart/rethinkdb_dart.dart';
 
-import 'package:chat/src/models/user.dart';
-import 'package:chat/src/models/message.dart';
-import 'package:chat/src/services/message/message_service_contract.dart';
-
 class MessageService implements IMessageService {
-  final Connection _connection;
   final Rethinkdb rethinkdb;
+  final Connection _connection;
   final _controller = StreamController<Message>.broadcast();
   StreamSubscription _changefeed;
 
-  MessageService(this._connection, this.rethinkdb);
+  MessageService(this.rethinkdb, this._connection);
 
   @override
   Future<bool> send(Message message) async {
