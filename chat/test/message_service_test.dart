@@ -1,3 +1,6 @@
+import 'package:chat/src/services/encryption/encryption_service.dart';
+import 'package:encrypt/encrypt.dart';
+
 import 'helper.dart';
 import 'package:chat/src/models/message.dart';
 import 'package:chat/src/models/user.dart';
@@ -12,8 +15,10 @@ void main() {
 
   setUp(() async {
     connection = await rethinkdb.connect(host: "127.0.0.1", port: 28015);
+    final EncryptionService encryption =
+        EncryptionService(Encrypter(AES(Key.fromLength(32))));
     await createDb(rethinkdb, connection);
-    messageService = MessageService(rethinkdb, connection);
+    messageService = MessageService(rethinkdb, connection, encryption);
   });
 
   tearDown(() async {
