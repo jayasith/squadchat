@@ -1,7 +1,7 @@
 import 'package:chat/src/services/encryption/encryption_service_contract.dart';
 import 'package:encrypt/encrypt.dart';
 
-class EncryptionService implements IEncryption {
+class EncryptionService implements IEncryptionService {
   final Encrypter _encrypter;
   final _iv = IV.fromLength(10);
 
