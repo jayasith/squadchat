@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 
 enum ReceiptStatus {
-  pending,
+  sent,
   delivered,
-  failed,
+  read,
 }
 
 extension EnumParsing on ReceiptStatus {

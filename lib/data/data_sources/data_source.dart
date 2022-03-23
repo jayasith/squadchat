@@ -116,8 +116,8 @@ class DataSource implements IDataSource {
 
   @override
   Future<void> updateMessageReceipt(String messageId, ReceiptStatus status) {
-    return _db.transaction((txn) async {
-      await txn.update('messages', {'receipt': status.value()},
+    return _db.transaction((transaction) async {
+      await transaction.update('messages', {'receipt': status.value()},
           where: 'id = ?',
           whereArgs: [messageId],
           conflictAlgorithm: ConflictAlgorithm.replace);
