@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:chat/chat.dart';
 import 'package:equatable/equatable.dart';

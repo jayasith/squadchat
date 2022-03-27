@@ -11,6 +11,7 @@ abstract class ReceiptEvent extends Equatable {
 
 class Subscribed extends ReceiptEvent {
   final User user;
+
   const Subscribed(this.user);
 
   @override
@@ -19,6 +20,7 @@ class Subscribed extends ReceiptEvent {
 
 class ReceiptSent extends ReceiptEvent {
   final Receipt receipt;
+
   const ReceiptSent(this.receipt);
 
   @override
@@ -26,9 +28,9 @@ class ReceiptSent extends ReceiptEvent {
 }
 
 class _ReceiptReceived extends ReceiptEvent {
-  const _ReceiptReceived(this.receipt);
-
   final Receipt receipt;
+
+  const _ReceiptReceived(this.receipt);
 
   @override
   List<Object> get props => [receipt];
