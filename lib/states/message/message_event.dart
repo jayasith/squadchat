@@ -11,6 +11,7 @@ abstract class MessageEvent extends Equatable {
 
 class Subscribed extends MessageEvent {
   final User user;
+
   const Subscribed(this.user);
 
   @override
@@ -19,6 +20,7 @@ class Subscribed extends MessageEvent {
 
 class MessageSent extends MessageEvent {
   final Message message;
+
   const MessageSent(this.message);
 
   @override
@@ -26,9 +28,9 @@ class MessageSent extends MessageEvent {
 }
 
 class _MessageReceived extends MessageEvent {
-  const _MessageReceived(this.message);
-
   final Message message;
+
+  const _MessageReceived(this.message);
 
   @override
   List<Object> get props => [message];

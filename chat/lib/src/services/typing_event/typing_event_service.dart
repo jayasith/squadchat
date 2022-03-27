@@ -16,7 +16,7 @@ class TypingEventService implements ITypingEventService {
   TypingEventService(this._rethinkdb, this._connection);
 
   @override
-  Future<bool> send({@required TypingEvent event, @required User to}) async {
+  Future<bool> send({@required TypingEvent event, User to}) async {
     if (!to.active) return false;
 
     Map record = await _rethinkdb
