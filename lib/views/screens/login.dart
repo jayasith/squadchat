@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:squadchat/views/widgets/login/logo.dart';
+import 'package:squadchat/views/widgets/login/profile_image_upload.dart';
 
 class Login extends StatefulWidget {
   const Login({Key key}) : super(key: key);
@@ -19,7 +20,11 @@ class _LoginState extends State<Login> {
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [_logo(context)],
+          children: [
+            _logo(context),
+            const Spacer(),
+            const ProfileImageUpload()
+          ],
         ),
       ),
     );
