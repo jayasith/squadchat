@@ -27,12 +27,12 @@ class _LoginState extends State<Login> {
             const Spacer(),
             const ProfileImageUpload(),
             const Spacer(flex: 1),
-            const Padding(
-              padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
               child: CustomTextField(
                 hint: 'What is your name?',
                 height: 45,
-                // onchanged: (val) {},
+                onchanged: (val) {},
                 inputAction: TextInputAction.done,
               ),
             ),
