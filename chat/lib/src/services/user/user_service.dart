@@ -1,11 +1,10 @@
 import 'package:chat/src/models/user.dart';
-import 'package:chat/src/services/user/user_service_constract.dart';
-
+import 'package:chat/src/services/user/user_service_contract.dart';
 import 'package:rethinkdb_dart/rethinkdb_dart.dart';
 
 class UserService implements IUserService {
-  Connection _connection;
-  Rethinkdb rethinkdb;
+  final Rethinkdb rethinkdb;
+  final Connection _connection;
 
   UserService(this.rethinkdb, this._connection);
 
@@ -15,7 +14,7 @@ class UserService implements IUserService {
 
     if (user.id != null) data['id'] = user.id;
 
-    final result = await rethinkdb.table('user').insert(
+    final result = await rethinkdb.table('users').insert(
         data, {'conflict': 'update', 'return_changes': true}).run(_connection);
 
     return User.fromJson(result['changes'].first['new_val']);
@@ -23,7 +22,7 @@ class UserService implements IUserService {
 
   @override
   Future<void> disconnect(User user) async {
-    await rethinkdb.table('user').update({
+    await rethinkdb.table('users').update({
       'id': user.id,
       'active': false,
       'last_seen': DateTime.now(),
@@ -33,8 +32,9 @@ class UserService implements IUserService {
 
   @override
   Future<List<User>> online() async {
-    Cursor users =
-        await rethinkdb.table('user').filter({'active': true}).run(_connection);
+    Cursor users = await rethinkdb
+        .table('users')
+        .filter({'active': true}).run(_connection);
     final userList = await users.toList();
     return userList.map((user) => User.fromJson(user)).toList();
   }
