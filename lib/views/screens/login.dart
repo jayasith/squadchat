@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:squadchat/colors.dart';
+import 'package:squadchat/views/widgets/common/custom_text_field.dart';
 import 'package:squadchat/views/widgets/login/logo.dart';
 import 'package:squadchat/views/widgets/login/profile_image_upload.dart';
 
@@ -23,7 +25,36 @@ class _LoginState extends State<Login> {
           children: [
             _logo(context),
             const Spacer(),
-            const ProfileImageUpload()
+            const ProfileImageUpload(),
+            const Spacer(flex: 1),
+            const Padding(
+              padding: EdgeInsets.only(left: 20.0, right: 20.0),
+              child: CustomTextField(
+                hint: 'What is your name?',
+                height: 45,
+                // onchanged: (val) {},
+                inputAction: TextInputAction.done,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: ElevatedButton(
+                onPressed: () {},
+                child: Container(
+                    height: 45,
+                    alignment: Alignment.center,
+                    child: const Text(
+                      "Let's Connect",
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    )),
+                style: ElevatedButton.styleFrom(
+                    primary: primary,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(45))),
+              ),
+            )
           ],
         ),
       ),
