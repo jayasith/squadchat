@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const primary = Color(0xFFEF1B48);
+const primary = Color(0xFF4E65FF);
 const bubbleLight = Color(0xFFE8E8E8);
 const bubbleDark = Color(0xFF262629);
 const appBarDark = Color(0xFF111111);

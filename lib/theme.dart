@@ -26,8 +26,8 @@ ThemeData lightTheme(BuildContext context) => ThemeData.light().copyWith(
       tabBarTheme: tabBarTheme,
       dividerTheme: dividerTheme.copyWith(color: iconLight),
       iconTheme: const IconThemeData(color: iconLight),
-      textTheme: GoogleFonts.comfortaaTextTheme(Theme.of(context).textTheme)
-          .apply(displayColor: Colors.black),
+      textTheme: GoogleFonts.montserratTextTheme(Theme.of(context).textTheme)
+          .apply(displayColor: activeUsersDark),
       visualDensity: VisualDensity.adaptivePlatformDensity,
     );
 
@@ -38,7 +38,7 @@ ThemeData darkTheme(BuildContext context) => ThemeData.dark().copyWith(
     appBarTheme: appBarTheme.copyWith(backgroundColor: appBarDark),
     dividerTheme: dividerTheme.copyWith(color: bubbleDark),
     iconTheme: const IconThemeData(color: Colors.black),
-    textTheme: GoogleFonts.comfortaaTextTheme(Theme.of(context).textTheme)
+    textTheme: GoogleFonts.montserratTextTheme(Theme.of(context).textTheme)
         .apply(displayColor: Colors.white),
     visualDensity: VisualDensity.adaptivePlatformDensity);
 
