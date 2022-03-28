@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:squadchat/composition_root.dart';
 import 'package:squadchat/theme.dart';
-import 'package:squadchat/views/screens/login.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await CompositionRoot.configure();
   runApp(App());
 }
 
@@ -15,7 +17,7 @@ class App extends StatelessWidget {
       title: 'Squadchat',
       theme: lightTheme(context),
       darkTheme: darkTheme(context),
-      home: const Login(),
+      home: CompositionRoot.composeLoginUi(),
     );
   }
 }

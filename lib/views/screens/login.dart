@@ -54,7 +54,8 @@ class _LoginState extends State<Login> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(45))),
               ),
-            )
+            ),
+            const Spacer(flex: 1),
           ],
         ),
       ),
