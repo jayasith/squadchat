@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:squadchat/composition_root.dart';
 import 'package:squadchat/theme.dart';
+import 'package:squadchat/views/screens/chat_home/chat_home.dart';
+import 'package:squadchat/views/screens/login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
