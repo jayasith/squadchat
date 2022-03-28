@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:squadchat/views/screens/chat_home/active/active.dart';
+import 'package:squadchat/views/screens/chat_home/chats/chat.dart';
 import 'package:squadchat/views/widgets/chat_home/home_profile_image.dart';
 
 class Home extends StatefulWidget {
@@ -72,6 +74,12 @@ class _HomeState extends State<Home> {
             ]
           )
         ),
+        body:const TabBarView(
+          children: [
+            Chat(),
+            Active()
+          ],
+        )
       ),
     );
   }
