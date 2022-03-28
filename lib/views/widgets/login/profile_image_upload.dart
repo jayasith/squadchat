@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:squadchat/colors.dart';
+import 'package:squadchat/states/login/profile_image_cubit.dart';
 import 'package:squadchat/theme.dart';
 
 class ProfileImageUpload extends StatelessWidget {
@@ -7,7 +10,7 @@ class ProfileImageUpload extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 126,
       width: 126,
       child: Material(
@@ -19,13 +22,22 @@ class ProfileImageUpload extends StatelessWidget {
             fit: StackFit.expand,
             children: [
               CircleAvatar(
-                backgroundColor: Colors.transparent,
-                child: Icon(
-                  Icons.person_outline_rounded,
-                  size: 50,
-                  color: isLightTheme(context) ? iconLight : activeUsersDark,
-                ),
-              ),
+                  backgroundColor: Colors.transparent,
+                  child: BlocBuilder<ProfileImageCubit, File>(
+                      builder: (context, state) {
+                    return state == null
+                        ? Icon(
+                            Icons.person_outline_rounded,
+                            size: 50,
+                            color: isLightTheme(context)
+                                ? iconLight
+                                : activeUsersDark,
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(126),
+                            child: Image.file(state,
+                                width: 126, height: 126, fit: BoxFit.fill));
+                  })),
               Align(
                 alignment: Alignment.bottomRight,
                 child: const Padding(
@@ -39,7 +51,9 @@ class ProfileImageUpload extends StatelessWidget {
               )
             ],
           ),
-          onTap: () {},
+          onTap: () async {
+            await context.read<ProfileImageCubit>().getProfileImage();
+          },
         ),
       ),
     );
