@@ -6,13 +6,14 @@ import 'package:squadchat/states/login/login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   final IUserService _userService;
-  final ImageUploaderService _imageUploader;
+  final ImageUploaderService _imageUploaderService;
 
-  LoginCubit(this._userService, this._imageUploader) : super(LoginInitial());
+  LoginCubit(this._userService, this._imageUploaderService)
+      : super(LoginInitial());
 
   Future<void> connect(String name, File profileImage) async {
     emit(Loading());
-    final url = await _imageUploader.uploadImage(profileImage);
+    final url = await _imageUploaderService.uploadImage(profileImage);
     final user = User(
       username: name,
       photoUrl: url,

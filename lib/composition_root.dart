@@ -20,7 +20,7 @@ class CompositionRoot {
 
   static Widget composeLoginUi() {
     ImageUploaderService imageUploader =
-        ImageUploaderService('http://localhost:3000/upload');
+        ImageUploaderService('http://172.29.224.1:3000/upload');
 
     LoginCubit loginCubit = LoginCubit(_userService, imageUploader);
     ProfileImageCubit imageCubit = ProfileImageCubit();
