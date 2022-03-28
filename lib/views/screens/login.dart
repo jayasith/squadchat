@@ -64,26 +64,38 @@ class _LoginState extends State<Login> {
 
                   await _connectSession();
                 },
-                child: Container(
-                    height: 45,
-                    alignment: Alignment.center,
-                    child: const Text(
-                      "Let's Connect",
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    )),
+                child: BlocBuilder<LoginCubit, LoginState>(
+                    builder: (context, state) => state is Loading
+                        ? const Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Center(
+                                child: CircularProgressIndicator(
+                              color: Colors.white,
+                            )),
+                          )
+                        : Container(
+                            height: 45,
+                            alignment: Alignment.center,
+                            child: const Text(
+                              "Let's Connect",
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
+                            ))),
                 style: ElevatedButton.styleFrom(
                     primary: primary,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(45))),
               ),
             ),
-            const Spacer(flex: 1),
-            BlocBuilder<LoginCubit, LoginState>(
-                builder: (context, state) => state is Loading
-                    ? const Center(child: CircularProgressIndicator())
-                    : Container())
+            // const Spacer(flex: 1),
+            // BlocBuilder<LoginCubit, LoginState>(
+            //     builder: (context, state) => state is Loading
+            //         ? Padding(
+            //             padding: const EdgeInsets.only(bottom: 10),
+            //             child: Center(child: CircularProgressIndicator()),
+            //           )
+            //         : Container())
           ],
         ),
       ),
