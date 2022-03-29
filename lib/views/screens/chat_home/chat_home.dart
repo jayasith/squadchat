@@ -72,15 +72,19 @@ class _HomeState extends State<Home> {
                       ),
                       child: Align(
                         alignment: Alignment.center,
-                        child: BlocBuilder<HomeBloc, HomeState>(
-                            builder: (_, state) => state is HomeSuccess
-                                ? Text('Active(${state.onlineUsers.length})')
-                                : const Text('Active(0)')),
+                        child: Text('Active')
+                        // BlocBuilder<HomeBloc, HomeState>(
+                        //     builder: (_, state) => state is HomeSuccess
+                        //         ? Text('Active(${state.onlineUsers.length})')
+                        //         : const Text('Active(0)')),
                       ),
                     ))
                   ])),
-          body: const TabBarView(
-            children: [Chat(), Active()],
+          body: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 6.0),
+            child: TabBarView(
+              children: [Chat(), Active()],
+            ),
           )),
     );
   }
