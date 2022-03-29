@@ -17,12 +17,11 @@ class Active extends StatefulWidget {
 class _ActiveState extends State<Active> {
   @override
   Widget build(BuildContext context) {
-    return Container();
-    //   BlocBuilder<HomeBloc, HomeState>(builder: (_, state) {
-    //   if (state is HomeLoading)
-    //     return Center(child: CircularProgressIndicator());
-    //   if (state is HomeSuccess) return _buildActiveUserList(state.onlineUsers);
-    // });
+    return BlocBuilder<HomeBloc, HomeState>(builder: (_, state) {
+      if (state is HomeLoading)
+        return Center(child: CircularProgressIndicator());
+      if (state is HomeSuccess) return _buildActiveUserList(state.onlineUsers);
+    });
   }
 
   _activeRow(User user) => ListTile(

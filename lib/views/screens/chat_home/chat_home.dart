@@ -72,11 +72,10 @@ class _HomeState extends State<Home> {
                       ),
                       child: Align(
                         alignment: Alignment.center,
-                        child: Text('Active')
-                        // BlocBuilder<HomeBloc, HomeState>(
-                        //     builder: (_, state) => state is HomeSuccess
-                        //         ? Text('Active(${state.onlineUsers.length})')
-                        //         : const Text('Active(0)')),
+                        child: BlocBuilder<HomeBloc, HomeState>(
+                            builder: (_, state) => state is HomeSuccess
+                                ? Text('Active(${state.onlineUsers.length})')
+                                : const Text('Active(0)')),
                       ),
                     ))
                   ])),
