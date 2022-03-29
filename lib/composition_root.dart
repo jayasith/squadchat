@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:rethinkdb_dart/rethinkdb_dart.dart';
 import 'package:squadchat/data/services/image_uploader_service.dart';
+import 'package:squadchat/states/home/home_bloc.dart';
 import 'package:squadchat/states/login/login_cubit.dart';
 import 'package:squadchat/states/login/profile_image_cubit.dart';
+import 'package:squadchat/views/screens/chat_home/chat_home.dart';
 import 'package:squadchat/views/screens/login.dart';
 
 class CompositionRoot {
@@ -32,5 +34,13 @@ class CompositionRoot {
       ],
       child: const Login(),
     );
+  }
+
+  static Widget composeChatHomeUi() {
+    HomeBloc homeBloc = HomeBloc(_userService);
+
+    return MultiBlocProvider(
+        providers: [BlocProvider(create: (BuildContext context) => homeBloc)],
+        child: const Home());
   }
 }
