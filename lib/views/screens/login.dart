@@ -88,14 +88,7 @@ class _LoginState extends State<Login> {
                         borderRadius: BorderRadius.circular(45))),
               ),
             ),
-            // const Spacer(flex: 1),
-            // BlocBuilder<LoginCubit, LoginState>(
-            //     builder: (context, state) => state is Loading
-            //         ? Padding(
-            //             padding: const EdgeInsets.only(bottom: 10),
-            //             child: Center(child: CircularProgressIndicator()),
-            //           )
-            //         : Container())
+            const Spacer(flex: 1),
           ],
         ),
       ),
