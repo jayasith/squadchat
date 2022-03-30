@@ -79,8 +79,11 @@ class _HomeState extends State<Home> {
                       ),
                     ))
                   ])),
-          body: const TabBarView(
-            children: [Chat(), Active()],
+          body: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 6.0),
+            child: TabBarView(
+              children: [Chat(), Active()],
+            ),
           )),
     );
   }
