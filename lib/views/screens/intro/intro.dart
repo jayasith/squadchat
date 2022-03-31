@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:squadchat/colors.dart';
+import 'package:squadchat/composition_root.dart';
 import 'package:squadchat/states/login/login_cubit.dart';
 import 'package:squadchat/states/login/login_state.dart';
 import 'package:squadchat/theme.dart';
@@ -51,7 +51,10 @@ class Intro extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 20),
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Login()));
+                },
                 child: const Icon(
                   Icons.arrow_forward,
                   size: 24,
