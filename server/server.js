@@ -16,7 +16,7 @@ app.post("/upload", (req, res) => {
 
 	uploadFile = req.files?.picture;
 	uploadPath = __dirname + "/public/uploads/images/profile/" + uploadFile.name;
-	console.log(uploadPath);
+
 	uploadFile.mv(uploadPath, err => {
 		if (err) return res.status(500).json(err);
 

@@ -9,6 +9,8 @@ import 'package:squadchat/views/widgets/login/logo.dart';
 import 'package:squadchat/views/widgets/login/profile_image_upload.dart';
 
 class Login extends StatefulWidget {
+  static String route = 'login';
+
   const Login({Key key}) : super(key: key);
 
   @override

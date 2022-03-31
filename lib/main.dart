@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:squadchat/composition_root.dart';
 import 'package:squadchat/theme.dart';
 import 'package:squadchat/views/screens/chat_home/chat_home.dart';
+import 'package:squadchat/views/screens/intro/intro.dart';
 import 'package:squadchat/views/screens/login/login.dart';
 
 void main() async {
@@ -15,11 +16,10 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Squadchat',
-      theme: lightTheme(context),
-      darkTheme: darkTheme(context),
-      home: CompositionRoot.composeLoginUi(),
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'Squadchat',
+        theme: lightTheme(context),
+        darkTheme: darkTheme(context),
+        home: CompositionRoot.composeLoginUi());
   }
 }
