@@ -5,4 +5,5 @@ abstract class IUserService {
   Future<List<User>> online();
   Future<void> disconnect(User user);
   Future<void> delete(User user);
+  Future<User> fetch(String chatId);
 }

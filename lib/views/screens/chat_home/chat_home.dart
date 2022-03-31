@@ -1,23 +1,34 @@
+import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:squadchat/states/home/chat_bloc.dart';
 import 'package:squadchat/states/home/home_bloc.dart';
 import 'package:squadchat/states/home/home_state.dart';
+import 'package:squadchat/states/message/message_bloc.dart';
 import 'package:squadchat/views/screens/chat_home/active/active.dart';
 import 'package:squadchat/views/screens/chat_home/chats/chat.dart';
 import 'package:squadchat/views/widgets/chat_home/home_profile_image.dart';
 
-class Home extends StatefulWidget {
+class Home extends StatefulWidget  {
   const Home();
 
   @override
   State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
     context.read<HomeBloc>().activeUsers();
+    context.read<ChatBloc>().chats();
+    final user = User.fromJson({
+      "id": "24af83d8-e403-4f25-a469-c07a5cc6de23",
+      "active": true,
+      "photo_url": "",
+      "last_seen": DateTime.now()
+    });
+    context.read<MessageBloc>().add(MessageEvent.onSubscribed(user));
   }
 
   @override
@@ -82,9 +93,12 @@ class _HomeState extends State<Home> {
           body: const Padding(
             padding: EdgeInsets.symmetric(horizontal: 6.0),
             child: TabBarView(
-              children: [Chat(), Active()],
+              children: [Chats(), Active()],
             ),
           )),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

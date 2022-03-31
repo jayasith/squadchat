@@ -20,6 +20,6 @@ class App extends StatelessWidget {
         title: 'Squadchat',
         theme: lightTheme(context),
         darkTheme: darkTheme(context),
-        home: CompositionRoot.composeLoginUi());
+        home: CompositionRoot.composeChatHomeUi());
   }
 }
