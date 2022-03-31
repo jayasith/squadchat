@@ -17,8 +17,7 @@ class ImageUploaderService {
     }
 
     final Response response = await Response.fromStream(result);
-    print(response.body);
 
-    return Uri.parse(_imageUrl).origin + response.body;
+    return 'http://10.0.2.2:3000' + response.body;
   }
 }
