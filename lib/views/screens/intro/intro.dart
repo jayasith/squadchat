@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:squadchat/colors.dart';
+import 'package:squadchat/states/login/login_cubit.dart';
+import 'package:squadchat/states/login/login_state.dart';
 import 'package:squadchat/theme.dart';
 import 'package:squadchat/views/screens/login/login.dart';
 
@@ -14,7 +17,7 @@ class Intro extends StatelessWidget {
             const Spacer(flex: 3),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
-                "Welcome to ",
+                "Welcome to",
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline5.copyWith(
                     fontWeight: FontWeight.bold,
@@ -48,8 +51,7 @@ class Intro extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 20),
               child: ElevatedButton(
-                onPressed: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const Login())),
+                onPressed: () {},
                 child: const Icon(
                   Icons.arrow_forward,
                   size: 24,

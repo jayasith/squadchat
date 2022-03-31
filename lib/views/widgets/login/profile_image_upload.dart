@@ -36,11 +36,11 @@ class ProfileImageUpload extends StatelessWidget {
                         : ClipRRect(
                             borderRadius: BorderRadius.circular(126),
                             child: Image.file(state,
-                                width: 126, height: 126, fit: BoxFit.fill));
+                                width: 126, height: 126, fit: BoxFit.cover));
                   })),
-              Align(
+              const Align(
                 alignment: Alignment.bottomRight,
-                child: const Padding(
+                child: Padding(
                   padding: EdgeInsets.all(5),
                   child: Icon(
                     Icons.add_circle_rounded,
