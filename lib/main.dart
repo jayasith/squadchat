@@ -5,6 +5,8 @@ import 'package:squadchat/views/screens/chat_home/chat_home.dart';
 import 'package:squadchat/views/screens/intro/intro.dart';
 import 'package:squadchat/views/screens/login/login.dart';
 
+import 'views/screens/user_profile/user_profile.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CompositionRoot.configure();
