@@ -8,7 +8,7 @@ import 'package:squadchat/states/home/home_bloc.dart';
 import 'package:squadchat/states/login/login_cubit.dart';
 import 'package:squadchat/states/login/profile_image_cubit.dart';
 import 'package:squadchat/views/screens/chat_home/chat_home.dart';
-import 'package:squadchat/views/screens/login.dart';
+import 'package:squadchat/views/screens/login/login.dart';
 
 class CompositionRoot {
   static Rethinkdb _rethinkdb;
