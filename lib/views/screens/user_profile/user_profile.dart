@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:squadchat/colors.dart';
 import 'package:squadchat/theme.dart';
 import 'package:squadchat/views/widgets/login/logo.dart';
+import 'package:squadchat/views/screens/user_profile/user_data.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key key}) : super(key: key);
@@ -18,6 +19,7 @@ class _UserProfileState extends State<UserProfile> {
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(
               height: 30,
@@ -63,30 +65,38 @@ class _UserProfileState extends State<UserProfile> {
             SizedBox(
               height: 126,
               width: 126,
-              child: Material(
-                color:
-                    isLightTheme(context) ? Colors.grey[200] : Colors.grey[900],
-                borderRadius: BorderRadius.circular(126),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(126),
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(126),
-                              child: Image.network(
-                                  'http://10.0.2.2:3000/public/uploads/images/profile/scaled_image_picker887393490857838263.jpg',
-                                  width: 126,
-                                  height: 126,
-                                  fit: BoxFit.cover))),
-                    ],
-                  ),
-                ),
-              ),
+              child: CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(126),
+                      child: Image.network(
+                          'http://10.0.2.2:3000/public/uploads/images/profile/scaled_image_picker887393490857838263.jpg',
+                          width: 126,
+                          height: 126,
+                          fit: BoxFit.cover))),
             ),
-            const Spacer(flex: 1),
+            Flexible(
+              flex: 8,
+              child: ListView.builder(
+                  itemCount: storeItems.length,
+                  itemBuilder: (context, index) {
+                    UserData item = storeItems.elementAt(index);
+
+                    return ListTile(
+                      title: Text(
+                        item.dataAttribute,
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                            color: isLightTheme(context)
+                                ? Colors.black
+                                : Colors.white),
+                      ),
+                      trailing: const IconButton(
+                        icon: Icon(Icons.analytics),
+                        onPressed: null,
+                      ),
+                    );
+                  }),
+            ),
             Padding(
               padding: const EdgeInsets.all(16),
               child: ElevatedButton(
