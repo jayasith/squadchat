@@ -17,6 +17,7 @@ class ImageUploaderService {
     }
 
     final Response response = await Response.fromStream(result);
+    print(response.body);
 
     return Uri.parse(_imageUrl).origin + response.body;
   }
