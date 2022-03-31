@@ -38,4 +38,14 @@ class UserService implements IUserService {
     final userList = await users.toList();
     return userList.map((user) => User.fromJson(user)).toList();
   }
+
+  @override
+  Future<void> delete(User user) async {
+    await rethinkdb
+        .table('users')
+        .filter({'id': user.id})
+        .delete()
+        .run(_connection);
+    _connection.close();
+  }
 }

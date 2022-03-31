@@ -8,14 +8,14 @@ import 'package:squadchat/views/widgets/common/custom_text_field.dart';
 import 'package:squadchat/views/widgets/login/logo.dart';
 import 'package:squadchat/views/widgets/login/profile_image_upload.dart';
 
-class Login extends StatefulWidget {
-  const Login({Key key}) : super(key: key);
+class UserProfile extends StatefulWidget {
+  const UserProfile({Key key}) : super(key: key);
 
   @override
-  State<Login> createState() => _LoginState();
+  State<UserProfile> createState() => _UserProfileState();
 }
 
-class _LoginState extends State<Login> {
+class _UserProfileState extends State<UserProfile> {
   String _name = '';
 
   @override
@@ -88,14 +88,7 @@ class _LoginState extends State<Login> {
                         borderRadius: BorderRadius.circular(45))),
               ),
             ),
-            // const Spacer(flex: 1),
-            // BlocBuilder<LoginCubit, LoginState>(
-            //     builder: (context, state) => state is Loading
-            //         ? Padding(
-            //             padding: const EdgeInsets.only(bottom: 10),
-            //             child: Center(child: CircularProgressIndicator()),
-            //           )
-            //         : Container())
+            const Spacer(flex: 1),
           ],
         ),
       ),

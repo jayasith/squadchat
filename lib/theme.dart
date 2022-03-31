@@ -17,7 +17,8 @@ final tabBarTheme = TabBarTheme(
   ),
 );
 
-final dividerTheme = DividerThemeData().copyWith(thickness: 1.0, indent: 75.0);
+final dividerTheme =
+    const DividerThemeData().copyWith(thickness: 1.0, indent: 75.0);
 
 ThemeData lightTheme(BuildContext context) => ThemeData.light().copyWith(
       primaryColor: primary,
