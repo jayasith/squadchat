@@ -13,12 +13,16 @@ class MessageService implements IMessageService {
   final _controller = StreamController<Message>.broadcast();
   StreamSubscription _changefeed;
 
-  MessageService(this.rethinkdb, this._connection, this._encryptionService);
+  MessageService(this.rethinkdb, this._connection,
+      {EncryptionService encryptionService})
+      : _encryptionService = encryptionService;
 
   @override
   Future<bool> send(Message message) async {
     final data = message.toJson();
-    data['contents'] = _encryptionService.encrypt(data['contents']);
+    if (_encryptionService != null) {
+      data['contents'] = _encryptionService.encrypt(data['contents']);
+    }
     Map record =
         await rethinkdb.table('messages').insert(data).run(_connection);
     return record['inserted'] == 1;
@@ -59,7 +63,9 @@ class MessageService implements IMessageService {
 
   Message messageFromFeed(feedData) {
     final data = feedData['new_val'];
-    data['contents'] = _encryptionService.decrypt(data['contents']);
+    if (_encryptionService != null) {
+      data['contents'] = _encryptionService.decrypt(data['contents']);
+    }
 
     return Message.fromJson(data);
   }
