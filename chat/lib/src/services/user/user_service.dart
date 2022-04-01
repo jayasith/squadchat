@@ -54,4 +54,14 @@ class UserService implements IUserService {
     final user = await rethinkdb.table('users').get(chatId).run(_connection);
     return User.fromJson(user);
   }
+
+  @override
+  Future<User> fetchUser(String userId) async {
+    final user = await rethinkdb
+        .table('users')
+        .filter({'id': userId})
+        .pluck('username', 'active', 'last_seen')
+        .run(_connection);
+    return User.fromJson(user);
+  }
 }
