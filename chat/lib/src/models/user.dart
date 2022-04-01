@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 
 class User {
-   String _id;
-   String username;
-   String photoUrl;
-   bool active;
-   DateTime lastseen;
+  String _id;
+  String username;
+  String photoUrl;
+  bool active;
+  DateTime lastseen;
 
   User({
     @required this.username,
