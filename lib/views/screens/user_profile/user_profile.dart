@@ -30,10 +30,13 @@ class _UserProfileState extends State<UserProfile> {
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Icon(
-                      Icons.arrow_back,
-                      color: primary,
-                      size: 30,
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: const Icon(
+                        Icons.arrow_back,
+                        color: primary,
+                        size: 30,
+                      ),
                     ),
                     Row(
                       children: [
