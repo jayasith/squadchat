@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:squadchat/colors.dart';
-import 'package:squadchat/composition_root.dart';
-import 'package:squadchat/states/login/login_cubit.dart';
-import 'package:squadchat/states/login/login_state.dart';
 import 'package:squadchat/theme.dart';
 import 'package:squadchat/views/screens/login/login.dart';
 

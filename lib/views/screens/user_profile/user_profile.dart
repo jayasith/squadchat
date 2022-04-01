@@ -3,7 +3,7 @@ import 'package:squadchat/colors.dart';
 import 'package:squadchat/theme.dart';
 import 'package:squadchat/views/widgets/chat_home/user_online_indicator.dart';
 import 'package:squadchat/views/widgets/login/logo.dart';
-import 'package:squadchat/views/screens/user_profile/user_data.dart';
+import 'package:squadchat/models/user_data.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key key}) : super(key: key);
