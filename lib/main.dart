@@ -4,7 +4,6 @@ import 'package:squadchat/theme.dart';
 import 'package:squadchat/views/screens/chat_home/chat_home.dart';
 import 'package:squadchat/views/screens/intro/intro.dart';
 import 'package:squadchat/views/screens/login/login.dart';
-
 import 'views/screens/user_profile/user_profile.dart';
 
 void main() async {
@@ -22,6 +21,6 @@ class App extends StatelessWidget {
         title: 'Squadchat',
         theme: lightTheme(context),
         darkTheme: darkTheme(context),
-        home: UserProfile());
+        home: CompositionRoot.composeLoginUi());
   }
 }

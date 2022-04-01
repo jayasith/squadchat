@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:squadchat/colors.dart';
 import 'package:squadchat/theme.dart';
+import 'package:squadchat/views/widgets/chat_home/user_online_indicator.dart';
 import 'package:squadchat/views/widgets/login/logo.dart';
 import 'package:squadchat/views/screens/user_profile/user_data.dart';
 
@@ -61,20 +62,32 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                   ]),
             ),
-            const Spacer(),
+            const Spacer(flex: 2),
             SizedBox(
               height: 126,
               width: 126,
               child: CircleAvatar(
                   backgroundColor: Colors.transparent,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(126),
-                      child: Image.network(
-                          'http://10.0.2.2:3000/public/uploads/images/profile/scaled_image_picker887393490857838263.jpg',
-                          width: 126,
-                          height: 126,
-                          fit: BoxFit.cover))),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      ClipRRect(
+                          borderRadius: BorderRadius.circular(126),
+                          child: Image.network(
+                              'http://10.0.2.2:3000/public/uploads/images/profile/scaled_image_picker887393490857838263.jpg',
+                              width: 126,
+                              height: 126,
+                              fit: BoxFit.cover)),
+                      const Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: UserOnlineIndicator(),
+                          ))
+                    ],
+                  )),
             ),
+            const Spacer(flex: 1),
             Flexible(
               flex: 8,
               child: ListView.builder(
@@ -90,9 +103,12 @@ class _UserProfileState extends State<UserProfile> {
                                 ? Colors.black
                                 : Colors.white),
                       ),
-                      trailing: const IconButton(
-                        icon: Icon(Icons.analytics),
-                        onPressed: null,
+                      trailing: Text(
+                        item.value,
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            color: isLightTheme(context)
+                                ? Colors.black
+                                : Colors.white),
                       ),
                     );
                   }),
