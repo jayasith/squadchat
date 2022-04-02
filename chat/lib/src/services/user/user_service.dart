@@ -31,6 +31,16 @@ class UserService implements IUserService {
   }
 
   @override
+  Future<void> reconnect(User user) async {
+    await rethinkdb.table('users').update({
+      'id': user.id,
+      'active': true,
+      'last_seen': DateTime.now(),
+    }).run(_connection);
+    _connection.close();
+  }
+
+  @override
   Future<List<User>> online() async {
     Cursor users = await rethinkdb
         .table('users')
@@ -40,10 +50,11 @@ class UserService implements IUserService {
   }
 
   @override
-  Future<void> delete(User user) async {
+  Future<void> deleteUser(String userId) async {
+    print(userId);
     await rethinkdb
         .table('users')
-        .filter({'id': user.id})
+        .filter({'id': userId})
         .delete()
         .run(_connection);
     _connection.close();
