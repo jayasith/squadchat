@@ -13,7 +13,7 @@ void main() {
   setUp(() async {
     connection = await rethinkdb.connect(host: "127.0.0.1", port: 28015);
     await createDb(rethinkdb, connection);
-    receiptService = ReceiptService(rethinkdb, connection);
+    receiptService = ReceiptService(rethinkdb, connection,null);
   });
 
   tearDown(() async {
