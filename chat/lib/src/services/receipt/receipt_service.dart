@@ -60,7 +60,7 @@ class ReceiptService implements IReceiptService {
   }
 
   _removeDeliveredReceipt(Receipt receipt){
-    rethinkdb.table('receipts').get(receipt.id).delete({'return_changes':false}.run(_connection));
+    rethinkdb.table('receipts').get(receipt.id).delete({'return_changes':false}).run(_connection);
   }
 
 }

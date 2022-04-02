@@ -11,14 +11,20 @@ class DataSource implements IDataSource {
 
   @override
   Future<void> addChat(Chat chat) async {
-    await _db.insert('chats', chat.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    await _db.transaction((transaction) async {
+      await transaction.insert('chats', chat.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.rollback);
+    })
+
   }
 
   @override
   Future<void> addMessage(LocalMessage message) async {
-    await _db.insert('messages', message.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    await _db.transaction((transaction) async {
+      await transaction.insert('messages', message.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    })
+
   }
 
   @override
