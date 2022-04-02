@@ -46,6 +46,7 @@ class ReceiptService implements IReceiptService {
             if (feedData['new_val'] == null) return;
 
             final receipt = receiptFromFeed(feedData);
+            _removeDeliveredReceipt(receipt);
             _controller.sink.add(receipt);
           }).catchError((error) {
             print(error);
@@ -57,4 +58,9 @@ class ReceiptService implements IReceiptService {
     final data = feedData['new_val'];
     return Receipt.fromJson(data);
   }
+
+  _removeDeliveredReceipt(Receipt receipt){
+    rethinkdb.table('receipts').get(receipt.id).delete({'return_changes':false}.run(_connection));
+  }
+
 }
