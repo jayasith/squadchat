@@ -14,7 +14,7 @@ class DataSource implements IDataSource {
     await _db.transaction((transaction) async {
       await transaction.insert('chats', chat.toMap(),
           conflictAlgorithm: ConflictAlgorithm.rollback);
-    })
+    });
 
   }
 
@@ -23,7 +23,7 @@ class DataSource implements IDataSource {
     await _db.transaction((transaction) async {
       await transaction.insert('messages', message.toMap(),
           conflictAlgorithm: ConflictAlgorithm.replace);
-    })
+    });
 
   }
 
