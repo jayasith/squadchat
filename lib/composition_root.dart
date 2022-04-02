@@ -31,7 +31,10 @@ class CompositionRoot {
     _connection = await _rethinkdb.connect(host: UrlConfig().host, port: 28015);
     _userService = UserService(_rethinkdb, _connection);
     _localDb = await LocalDatabase().createDatabase();
-    _messageService = MessageService(_rethinkdb, _connection, );
+    _messageService = MessageService(
+      _rethinkdb,
+      _connection,
+    );
     _iDataSource = DataSource(_localDb);
   }
 
@@ -54,15 +57,17 @@ class CompositionRoot {
   static Widget composeChatHomeUi() {
     HomeBloc homeBloc = HomeBloc(_userService);
     MessageBloc messageBloc = MessageBloc(_messageService);
-    ChatsViewModel chatsViewModel = ChatsViewModel(_iDataSource,_userService);
+    ChatsViewModel chatsViewModel = ChatsViewModel(_iDataSource, _userService);
     ChatBloc chatBloc = ChatBloc(chatsViewModel);
 
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (BuildContext context) => homeBloc),
-          BlocProvider(create: (BuildContext context) => messageBloc),
-          BlocProvider(create: (BuildContext context) => chatBloc)
-        ],
-        child: const Home());
+    return MultiBlocProvider(providers: [
+      BlocProvider(create: (BuildContext context) => homeBloc),
+      BlocProvider(create: (BuildContext context) => messageBloc),
+      BlocProvider(create: (BuildContext context) => chatBloc)
+    ], child: const Home());
+  }
+
+  static void deleteUser(String userId) async {
+    await _userService.deleteUser(userId);
   }
 }

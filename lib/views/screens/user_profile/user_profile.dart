@@ -1,7 +1,11 @@
+import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:squadchat/colors.dart';
+import 'package:squadchat/composition_root.dart';
 import 'package:squadchat/theme.dart';
+import 'package:squadchat/views/screens/intro/intro.dart';
 import 'package:squadchat/views/widgets/chat_home/user_online_indicator.dart';
+import 'package:squadchat/views/widgets/common/custom_confirmation_dialog.dart';
 import 'package:squadchat/views/widgets/login/logo.dart';
 import 'package:squadchat/models/user_data.dart';
 
@@ -13,6 +17,8 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  UserService userService;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,7 +125,17 @@ class _UserProfileState extends State<UserProfile> {
             Padding(
               padding: const EdgeInsets.all(16),
               child: ElevatedButton(
-                onPressed: () async {},
+                onPressed: () {
+                  var alert = CustomConfirmationDialog(
+                    title: 'Delete Account',
+                    content: 'Do you want to delete your account ?',
+                    okFunction: _confirmationOk,
+                  );
+
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) => alert);
+                },
                 child: const Icon(Icons.delete_forever),
                 style: ElevatedButton.styleFrom(
                     primary: primary,
@@ -152,5 +168,11 @@ class _UserProfileState extends State<UserProfile> {
         ),
       ],
     );
+  }
+
+  _confirmationOk() async {
+    await CompositionRoot.deleteUser('0805cb2e-bc64-4d1a-97ec-3b1110f23e34');
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => Intro()));
   }
 }
