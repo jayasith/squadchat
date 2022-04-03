@@ -67,8 +67,8 @@ class CompositionRoot {
     ], child: const Home());
   }
 
-  static void deleteUser(String userId) async {
-    await _userService.deleteUser(userId);
+  static void deleteUser() async {
+    await _userService.deleteUser('0805cb2e-bc64-4d1a-97ec-3b1110f23e34');
   }
 
   static void disconnectUser() async {
