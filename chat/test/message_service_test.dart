@@ -49,7 +49,7 @@ void main() {
       contents: 'test message',
     );
 
-    final bool isSent = await messageService.send(message);
+    final Message isSent = await messageService.send(message);
     expect(isSent, true);
   }));
 

@@ -13,7 +13,7 @@ void main() {
   setUp(() async {
     connection = await rethinkdb.connect(host: "127.0.0.1", port: 28015);
     await createDb(rethinkdb, connection);
-    typingEventService = TypingEventService(rethinkdb, connection);
+    typingEventService = TypingEventService(rethinkdb, connection, null);
   });
 
   tearDown(() async {
@@ -37,7 +37,7 @@ void main() {
     TypingEvent typingEvent =
         TypingEvent(from: user2.id, to: user1.id, event: Typing.start);
 
-    final res = await typingEventService.send(event: typingEvent, to: user1);
+    final res = await typingEventService.send(event: typingEvent);
     expect(res, true);
   });
 
@@ -59,7 +59,7 @@ void main() {
       event: Typing.stop,
     );
 
-    await typingEventService.send(event: typing, to: user2);
-    await typingEventService.send(event: stopTyping, to: user2);
+    await typingEventService.send(event: typing);
+    await typingEventService.send(event: stopTyping);
   });
 }
