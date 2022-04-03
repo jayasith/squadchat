@@ -171,7 +171,7 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   _confirmationOk() async {
-    await CompositionRoot.deleteUser('0805cb2e-bc64-4d1a-97ec-3b1110f23e34');
+    await CompositionRoot.deleteUser();
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => Intro()));
   }
