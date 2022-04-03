@@ -9,11 +9,15 @@ import 'views/screens/user_profile/user_profile.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CompositionRoot.configure();
-  runApp(App());
+  final firstPage = Intro();
+  runApp(App(firstPage));
 }
 
 class App extends StatelessWidget {
-  // This widget is the root of your application.
+  final Widget firstPage;
+
+  App(this.firstPage);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,6 +25,6 @@ class App extends StatelessWidget {
         title: 'Squadchat',
         theme: lightTheme(context),
         darkTheme: darkTheme(context),
-        home: CompositionRoot.composeChatHomeUi());
+        home: firstPage);
   }
 }

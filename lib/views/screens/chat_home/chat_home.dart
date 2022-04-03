@@ -11,29 +11,25 @@ import 'package:squadchat/views/screens/user_profile/user_profile.dart';
 import 'package:squadchat/views/widgets/chat_home/home_profile_image.dart';
 
 class Home extends StatefulWidget {
-  const Home();
+  final User user;
+  const Home(this.user);
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
+  User _user;
   @override
   void initState() {
     super.initState();
-    context.read<HomeBloc>().activeUsers();
-    context.read<ChatBloc>().chats();
-    final user = User.fromJson({
-      "id": "24af83d8-e403-4f25-a469-c07a5cc6de23",
-      "active": true,
-      "photo_url": "",
-      "last_seen": DateTime.now()
-    });
-    context.read<MessageBloc>().add(MessageEvent.onSubscribed(user));
+    _user = widget.user;
+    _initialSetup();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -47,14 +43,14 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                     width: double.maxFinite,
                     child: Row(children: [
                       const HomeProfileImage(
-                        imageUrl: "https://i.imgur.com/ZD73Ov7.jpg",
+                        imageUrl: _user.photoUrl,
                         userOnline: true,
                       ),
                       Column(
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(left: 8.0),
-                            child: Text('Chamindu',
+                            child: Text(_user.username,
                                 style: Theme.of(context)
                                     .textTheme
                                     .caption
@@ -106,6 +102,14 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
             ),
           )),
     );
+  }
+
+  _initialSetup() async {
+    final user =
+        (!_user.active ? await context.read<HomeBloc>().connect() : _user);
+    context.read<HomeBloc>().activeUsers(user);
+    context.read<ChatBloc>().chats();
+    context.read<MessageBloc>().add(MessageEvent.onSubscribed(user));
   }
 
   @override
