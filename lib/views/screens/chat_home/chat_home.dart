@@ -42,7 +42,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                 child: Container(
                     width: double.maxFinite,
                     child: Row(children: [
-                      const HomeProfileImage(
+                      HomeProfileImage(
                         imageUrl: _user.photoUrl,
                         userOnline: true,
                       ),
@@ -95,10 +95,10 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                       ),
                     ))
                   ])),
-          body: const Padding(
+          body: Padding(
             padding: EdgeInsets.symmetric(horizontal: 6.0),
             child: TabBarView(
-              children: [Chats(), Active()],
+              children: [Chats(_user), Active()],
             ),
           )),
     );

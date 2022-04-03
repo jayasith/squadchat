@@ -13,6 +13,7 @@ import 'package:squadchat/states/home/home_bloc.dart';
 import 'package:squadchat/states/login/login_cubit.dart';
 import 'package:squadchat/states/login/profile_image_cubit.dart';
 import 'package:squadchat/states/message/message_bloc.dart';
+import 'package:squadchat/states/typing/typing_notification_bloc.dart';
 import 'package:squadchat/view_models/chats_view_model.dart';
 import 'package:squadchat/views/screens/chat_home/chat_home.dart';
 import 'package:squadchat/views/screens/login/login.dart';
@@ -32,7 +33,8 @@ class CompositionRoot {
   static IDataSource _iDataSource;
   static ILocalCache _localCache;
   static MessageBloc _messageBloc;
-
+  static TypingNotificationBloc _typingNotificationBloc;
+  static TypingEventService _typingEventService;
   static configure() async {
     _rethinkdb = Rethinkdb();
     _connection = await _rethinkdb.connect(host: UrlConfig().host, port: 28015);
@@ -42,10 +44,13 @@ class CompositionRoot {
       _rethinkdb,
       _connection,
     );
+    _typingEventService =
+        TypingEventService(_rethinkdb, _connection, _userService);
     _iDataSource = DataSource(_localDb);
     final sharedPreferences = await SharedPreferences.getInstance();
     _localCache = LocalCache(sharedPreferences);
     _messageBloc = MessageBloc(_messageService);
+    _typingNotificationBloc = TypingNotificationBloc(_typingEventService);
   }
 
   static Widget start() {
@@ -81,6 +86,7 @@ class CompositionRoot {
     return MultiBlocProvider(providers: [
       BlocProvider(create: (BuildContext context) => homeBloc),
       BlocProvider(create: (BuildContext context) => _messageBloc),
+      BlocProvider(create: (BuildContext context) => _typingNotificationBloc),
       BlocProvider(create: (BuildContext context) => chatBloc)
     ], child: Home(user));
   }
