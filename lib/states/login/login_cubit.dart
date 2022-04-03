@@ -28,7 +28,7 @@ class LoginCubit extends Cubit<LoginState> {
       'active'    : true,
       'photo_url' : createdUser.photoUrl,
       'id'        : createdUser.id 
-    }
+    };
     await _localCache.save('USER',userJson);
     emit(LoginSuccess(createdUser));
   }
