@@ -43,8 +43,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         state == AppLifecycleState.detached;
     final isResumed = state == AppLifecycleState.resumed;
 
-    if (isNotActive) print('disconnecting user');
-    if (isResumed) print('reconnecting user');
+    if (isNotActive) CompositionRoot.disconnectUser();
+    if (isResumed) CompositionRoot.reconnectUser();
   }
 
   // This widget is the root of your application.

@@ -71,13 +71,11 @@ class CompositionRoot {
     await _userService.deleteUser(userId);
   }
 
-  static void disconnectUser(User user) async {
-    return print('disconnecting user');
-    await _userService.disconnect(user);
+  static void disconnectUser() async {
+    await _userService.disconnect('9ab25a84-fe1a-4506-ac52-f73eb6d09505');
   }
 
-  static void reconnectUser(User user) async {
-    return print('disconnecting user');
-    await _userService.disconnect(user);
+  static void reconnectUser() async {
+    await _userService.reconnect('9ab25a84-fe1a-4506-ac52-f73eb6d09505');
   }
 }
