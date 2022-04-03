@@ -9,10 +9,44 @@ import 'views/screens/user_profile/user_profile.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CompositionRoot.configure();
-  runApp(App());
+  runApp(const MyApp());
 }
 
-class App extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  const MyApp({Key key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) return;
+
+    final isNotActive = state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached;
+    final isResumed = state == AppLifecycleState.resumed;
+
+    if (isNotActive) print('disconnecting user');
+    if (isResumed) print('reconnecting user');
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {

@@ -70,4 +70,14 @@ class CompositionRoot {
   static void deleteUser(String userId) async {
     await _userService.deleteUser(userId);
   }
+
+  static void disconnectUser(User user) async {
+    return print('disconnecting user');
+    await _userService.disconnect(user);
+  }
+
+  static void reconnectUser(User user) async {
+    return print('disconnecting user');
+    await _userService.disconnect(user);
+  }
 }
