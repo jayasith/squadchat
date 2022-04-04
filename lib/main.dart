@@ -9,17 +9,20 @@ import 'package:squadchat/views/screens/user_profile/user_profile.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CompositionRoot.configure();
-  runApp(const MyApp());
+  final firstPage = Intro();
+  runApp(App(firstPage));
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key key}) : super(key: key);
+class App extends StatefulWidget {
+  final Widget firstPage;
+
+  App(this.firstPage);
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<App> createState() => _AppState();
 }
 
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
@@ -47,7 +50,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (isResumed) CompositionRoot.reconnectUser();
   }
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -55,6 +57,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         title: 'Squadchat',
         theme: lightTheme(context),
         darkTheme: darkTheme(context),
-        home: CompositionRoot.composeChatHomeUi());
+        home: widget.firstPage);
   }
 }

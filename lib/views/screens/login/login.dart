@@ -11,7 +11,8 @@ import 'package:squadchat/views/screens/login/login_router_contract.dart';
 
 class Login extends StatefulWidget {
   final ILoginRouter loginRouter;
-  const Login({Key key, this.loginRouter}) : super(key: key);
+  // ignore: use_key_in_widget_constructors, prefer_const_constructors_in_immutables
+  Login(this.loginRouter);
 
   @override
   State<Login> createState() => _LoginState();
