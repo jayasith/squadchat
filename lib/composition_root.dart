@@ -42,7 +42,7 @@ class CompositionRoot {
     ImageUploaderService imageUploader =
         ImageUploaderService('http://${UrlConfig().ip}:3000/upload');
 
-    LoginCubit loginCubit = LoginCubit(_userService, imageUploader);
+    LoginCubit loginCubit = LoginCubit(_userService, imageUploader, null);
     ProfileImageCubit imageCubit = ProfileImageCubit();
 
     return MultiBlocProvider(

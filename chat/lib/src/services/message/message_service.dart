@@ -18,14 +18,14 @@ class MessageService implements IMessageService {
       : _encryptionService = encryptionService;
 
   @override
-  Future<bool> send(Message message) async {
+  Future<Message> send(Message message) async {
     final data = message.toJson();
     if (_encryptionService != null) {
       data['contents'] = _encryptionService.encrypt(data['contents']);
     }
     Map record =
-        await rethinkdb.table('messages').insert(data).run(_connection);
-    return record['inserted'] == 1;
+        await rethinkdb.table('messages').insert(data,{'return_changes':true}).run(_connection);
+    return Message.fromJson(record['changes'].first['new_val']);
   }
 
   @override
