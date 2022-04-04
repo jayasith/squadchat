@@ -10,6 +10,7 @@ import 'package:squadchat/views/screens/chat_home/chats/chat.dart';
 import 'package:squadchat/views/screens/chat_home/home_router_contract.dart';
 import 'package:squadchat/views/screens/user_profile/user_profile.dart';
 import 'package:squadchat/views/widgets/chat_home/home_profile_image.dart';
+import 'package:squadchat/views/widgets/common/header_status.dart';
 
 class Home extends StatefulWidget {
   final User user;
@@ -36,40 +37,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
       length: 2,
       child: Scaffold(
           appBar: AppBar(
-              title: InkWell(
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const UserProfile())),
-                child: Container(
-                    width: double.maxFinite,
-                    child: Row(children: [
-                      HomeProfileImage(
-                        imageUrl: _user.photoUrl,
-                        userOnline: true,
-                      ),
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(_user.username,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption
-                                    .copyWith(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text('online',
-                                style: Theme.of(context).textTheme.caption),
-                          )
-                        ],
-                      )
-                    ])),
-              ),
+              title: HeaderStatus(_user.username, _user.photoUrl, _user.active),
               bottom: TabBar(
                   indicatorPadding: const EdgeInsets.symmetric(vertical: 10.0),
                   tabs: [
