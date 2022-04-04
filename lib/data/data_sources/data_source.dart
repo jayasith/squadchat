@@ -11,14 +11,20 @@ class DataSource implements IDataSource {
 
   @override
   Future<void> addChat(Chat chat) async {
-    await _db.insert('chats', chat.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    await _db.transaction((transaction) async {
+      await transaction.insert('chats', chat.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.rollback);
+    });
+
   }
 
   @override
   Future<void> addMessage(LocalMessage message) async {
-    await _db.insert('messages', message.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    await _db.transaction((transaction) async {
+      await transaction.insert('messages', message.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    });
+
   }
 
   @override
@@ -54,11 +60,12 @@ class DataSource implements IDataSource {
       ''', ['delivered']);
 
       return chatsWithLatestMessage.map<Chat>((row) {
-        final int unread = int.tryParse(chatsWithUnreadMessages.firstWhere(
+        final int unread = chatsWithUnreadMessages.firstWhere(
             (element) => row['chat_id'] == element['chat_id'],
-            orElse: () => {'unread': 0})['unread']);
+            orElse: () => {'unread': 0})['unread'];
 
-        final chat = Chat.fromMap(row);
+
+        final chat = Chat.fromMap({'id':row['chat_id']});
         chat.unread = unread;
         chat.mostRecent = LocalMessage.fromMap(row);
         return chat;
