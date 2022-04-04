@@ -1,6 +1,5 @@
 import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
-import 'package:squadchat/cache/local_cache_service.dart';
 import 'package:squadchat/colors.dart';
 import 'package:squadchat/composition_root.dart';
 import 'package:squadchat/theme.dart';
@@ -18,13 +17,15 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  User _user;
+  String photoUrl;
+  List<UserData> userDetails;
   UserService userService;
-  LocalCache _localCacheService;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
+    _fetchUser();
   }
 
   @override
@@ -90,11 +91,8 @@ class _UserProfileState extends State<UserProfile> {
                     children: [
                       ClipRRect(
                           borderRadius: BorderRadius.circular(126),
-                          child: Image.network(
-                              'http://10.0.2.2:3000/public/uploads/images/profile/scaled_image_picker887393490857838263.jpg',
-                              width: 126,
-                              height: 126,
-                              fit: BoxFit.cover)),
+                          child: Image.network(photoUrl,
+                              width: 126, height: 126, fit: BoxFit.cover)),
                       const Align(
                           alignment: Alignment.topRight,
                           child: Padding(
@@ -108,9 +106,9 @@ class _UserProfileState extends State<UserProfile> {
             Flexible(
               flex: 8,
               child: ListView.builder(
-                  itemCount: storeItems.length,
+                  itemCount: userDetails.length,
                   itemBuilder: (context, index) {
-                    UserData item = storeItems.elementAt(index);
+                    UserData item = userDetails.elementAt(index);
 
                     return ListTile(
                       title: Text(
@@ -184,8 +182,22 @@ class _UserProfileState extends State<UserProfile> {
         context, MaterialPageRoute(builder: (context) => Intro()));
   }
 
-  _fetchUserData() {
-    Map userDetails = _localCacheService.fetch('USER');
-    print(userDetails.toString());
+  void _fetchUser() async {
+    _user = await CompositionRoot.fetchUser();
+
+    setState(() {
+      userDetails = [
+        UserData(dataAttribute: "Username", value: _user.username),
+        UserData(
+          dataAttribute: "Active Status",
+          value: _user.active ? "Active" : "Inactive",
+        ),
+        UserData(dataAttribute: "Last Seen", value: _user.lastseen.toString()),
+      ];
+    });
+
+    setState(() {
+      photoUrl = _user.photoUrl;
+    });
   }
 }
