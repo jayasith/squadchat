@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:squadchat/states/home/home_bloc.dart';
 import 'package:squadchat/states/home/home_state.dart';
+import 'package:squadchat/views/screens/chat_home/home_router_contract.dart';
 
 import '../../../../theme.dart';
 import '../../../widgets/chat_home/home_profile_image.dart';
 
 class Active extends StatefulWidget {
-  const Active();
+  final User user;
+  final IHomeRouter homeRouter;
+  Active(this.homeRouter, this.user);
 
   @override
   _ActiveState createState() => _ActiveState();
@@ -38,7 +41,12 @@ class _ActiveState extends State<Active> {
 
   _buildActiveUserList(List<User> users) => ListView.separated(
       padding: const EdgeInsets.only(top: 10.0, right: 16.0),
-      itemBuilder: (BuildContext context, index) => _activeRow(users[index]),
+      itemBuilder: (BuildContext context, index) => GestureDetector(
+            child: _activeRow(users[index]),
+            onTap: () => this.widget.homeRouter.onShowMessageThread(
+                context, users[index], widget.user,
+                chatId: users[index].id),
+          ),
       separatorBuilder: (_, __) => Divider(
             color: isLightTheme(context) ? Colors.white : Colors.black,
             height: 0.0,
