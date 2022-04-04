@@ -16,10 +16,10 @@ import 'package:squadchat/states/message/message_bloc.dart';
 import 'package:squadchat/states/typing/typing_notification_bloc.dart';
 import 'package:squadchat/view_models/chats_view_model.dart';
 import 'package:squadchat/views/screens/chat_home/chat_home.dart';
+import 'package:squadchat/views/screens/intro/intro.dart';
 import 'package:squadchat/views/screens/login/login.dart';
 import 'package:squadchat/views/screens/login/login_router.dart';
 import 'package:squadchat/views/screens/login/login_router_contract.dart';
-
 import 'data/data_sources/data_source.dart';
 import 'data/data_sources/data_source_contract.dart';
 import 'data/factories/db_factory.dart';
@@ -35,6 +35,7 @@ class CompositionRoot {
   static MessageBloc _messageBloc;
   static TypingNotificationBloc _typingNotificationBloc;
   static TypingEventService _typingEventService;
+
   static configure() async {
     _rethinkdb = Rethinkdb();
     _connection = await _rethinkdb.connect(host: UrlConfig().host, port: 28015);
