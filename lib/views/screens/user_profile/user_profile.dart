@@ -2,6 +2,8 @@ import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:squadchat/colors.dart';
 import 'package:squadchat/composition_root.dart';
+import 'package:squadchat/data/data_sources/data_source.dart';
+import 'package:squadchat/data/factories/db_factory.dart';
 import 'package:squadchat/theme.dart';
 import 'package:squadchat/views/screens/intro/intro.dart';
 import 'package:squadchat/views/widgets/chat_home/user_online_indicator.dart';
@@ -21,6 +23,7 @@ class _UserProfileState extends State<UserProfile> {
   String photoUrl;
   List<UserData> userDetails;
   UserService userService;
+  LocalDatabase _localDatabase;
 
   @override
   void initState() {
@@ -178,6 +181,7 @@ class _UserProfileState extends State<UserProfile> {
 
   _confirmationOk() async {
     await CompositionRoot.deleteUser();
+    await _localDatabase.removeDB();
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => Intro()));
   }
