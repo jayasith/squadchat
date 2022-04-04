@@ -22,9 +22,10 @@ class HeaderStatus extends StatelessWidget {
             userOnline: active,
           ),
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 8.0),
+                padding: const EdgeInsets.only(left: 12.0),
                 child: Text(username.trim(),
                     style: Theme.of(context).textTheme.caption.copyWith(
                           fontSize: 14.0,

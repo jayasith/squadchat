@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:squadchat/colors.dart';
 import 'package:squadchat/models/local_message.dart';
 import 'package:squadchat/states/home/chat_bloc.dart';
 import 'package:squadchat/states/message/message_bloc.dart';
@@ -55,30 +56,112 @@ class _MessageThreadState extends State<MessageThread> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        titleSpacing: 0,
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-                icon: Icon(
-                  Icons.arrow_back_ios_rounded,
-                  color: isLightTheme(context) ? Colors.black : Colors.white,
-                )),
-            Expanded(
-                child: HeaderStatus(
-              receiver.username,
-              receiver.photoUrl,
-              receiver.active,
-              lastseen: receiver.lastseen,
-            ))
-          ],
+        appBar: AppBar(
+          titleSpacing: 0,
+          automaticallyImplyLeading: false,
+          title: Row(
+            children: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  icon: Icon(
+                    Icons.arrow_back_ios_rounded,
+                    color: isLightTheme(context) ? Colors.black : Colors.white,
+                  )),
+              Expanded(
+                  child: HeaderStatus(
+                receiver.username,
+                receiver.photoUrl,
+                receiver.active,
+                lastseen: receiver.lastseen,
+              ))
+            ],
+          ),
         ),
+        resizeToAvoidBottomInset: true,
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: Column(
+            children: [
+              Flexible(flex: 6, child: Container()),
+              Expanded(
+                  child: Container(
+                      height: 100,
+                      decoration: BoxDecoration(
+                          color:
+                              isLightTheme(context) ? Colors.white : appBarDark,
+                          boxShadow: [
+                            BoxShadow(
+                              offset: Offset(0, -3),
+                              blurRadius: 6.0,
+                              color: Colors.black12,
+                            )
+                          ]),
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 12.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: _buildMessageInput(context),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Container(
+                                height: 45.0,
+                                width: 45.0,
+                                child: RawMaterialButton(
+                                  fillColor: primary,
+                                  shape: new CircleBorder(),
+                                  elevation: 5.0,
+                                  child: Icon(
+                                    Icons.send,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {},
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      )))
+            ],
+          ),
+        ));
+  }
+
+  _buildMessageInput(BuildContext context) {
+    final _border = OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(90.0)),
+        borderSide: isLightTheme(context)
+            ? BorderSide.none
+            : BorderSide(color: Colors.grey.withOpacity(0.3)));
+
+    return Focus(
+      onFocusChange: (focus) {},
+      child: TextFormField(
+        controller: _textEditingController,
+        textInputAction: TextInputAction.newline,
+        keyboardType: TextInputType.multiline,
+        maxLines: null,
+        style: Theme.of(context).textTheme.caption,
+        cursorColor: primary,
+        onChanged: (val) {},
+        decoration: InputDecoration(
+            contentPadding:
+                EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+            enabledBorder: _border,
+            filled: true,
+            fillColor:
+                isLightTheme(context) ? primary.withOpacity(0.1) : bubbleDark,
+            focusedBorder: _border),
       ),
-      body: Container(),
     );
   }
 
