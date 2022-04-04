@@ -50,10 +50,8 @@ class Intro extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 20),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CompositionRoot.start()));
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (_) => CompositionRoot.start()));
                 },
                 child: const Icon(
                   Icons.arrow_forward,

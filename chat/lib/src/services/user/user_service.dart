@@ -21,23 +21,34 @@ class UserService implements IUserService {
   }
 
   @override
-  Future<void> disconnect(User user) async {
-    await rethinkdb.table('users').update({
-      'id': user.id,
-      'active': false,
-      'last_seen': DateTime.now(),
-    }).run(_connection);
-    _connection.close();
+  Future<void> disconnect(String userId) async {
+    print('disconnecting user...');
+    try {
+      await rethinkdb.table('users').filter({'id': userId}).update({
+        'active': false,
+        'last_seen': DateTime.now(),
+      }).run(_connection);
+    } catch (e) {
+      print(e);
+    }
+    // _connection.close();
   }
 
   @override
-  Future<void> reconnect(User user) async {
-    await rethinkdb.table('users').update({
-      'id': user.id,
-      'active': true,
-      'last_seen': DateTime.now(),
-    }).run(_connection);
-    _connection.close();
+  Future<void> reconnect(String userId) async {
+    print('reconnecting user...');
+    try {
+      await rethinkdb.table('users').filter({
+        'id': userId,
+      }).update({
+        'active': true,
+        'last_seen': DateTime.now(),
+      }).run(_connection);
+    } catch (e) {
+      print(e);
+    }
+
+    // _connection.close();
   }
 
   @override

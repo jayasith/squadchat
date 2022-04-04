@@ -91,7 +91,15 @@ class CompositionRoot {
     ], child: Home(user));
   }
 
-  static void deleteUser(String userId) async {
-    await _userService.deleteUser(userId);
+  static void deleteUser() async {
+    await _userService.deleteUser('0805cb2e-bc64-4d1a-97ec-3b1110f23e34');
+  }
+
+  static void disconnectUser() async {
+    await _userService.disconnect('9ab25a84-fe1a-4506-ac52-f73eb6d09505');
+  }
+
+  static void reconnectUser() async {
+    await _userService.reconnect('9ab25a84-fe1a-4506-ac52-f73eb6d09505');
   }
 }
