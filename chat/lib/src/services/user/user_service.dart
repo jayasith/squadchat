@@ -10,6 +10,7 @@ class UserService implements IUserService {
 
   @override
   Future<User> connect(User user) async {
+    print('connecting user...');
     var data = user.toJson();
 
     if (user.id != null) data['id'] = user.id;
@@ -62,7 +63,7 @@ class UserService implements IUserService {
 
   @override
   Future<void> deleteUser(String userId) async {
-    print(userId);
+    print('removing user...');
     await rethinkdb
         .table('users')
         .filter({'id': userId})

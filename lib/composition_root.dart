@@ -100,15 +100,18 @@ class CompositionRoot {
   }
 
   static void deleteUser() async {
-    await _userService.deleteUser('0805cb2e-bc64-4d1a-97ec-3b1110f23e34');
+    final user = _localCache.fetch('USER');
+    await _userService.deleteUser(user['id'].toString());
   }
 
   static void disconnectUser() async {
-    await _userService.disconnect('9ab25a84-fe1a-4506-ac52-f73eb6d09505');
+    final user = _localCache.fetch('USER');
+    await _userService.disconnect(user['id'].toString());
   }
 
   static void reconnectUser() async {
-    await _userService.reconnect('9ab25a84-fe1a-4506-ac52-f73eb6d09505');
+    final user = _localCache.fetch('USER');
+    await _userService.reconnect(user['id'].toString());
   }
 
   static Widget composeMessageThreadUi(User receiver, User user,
