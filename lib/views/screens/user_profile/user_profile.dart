@@ -1,5 +1,6 @@
 import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
+import 'package:squadchat/cache/local_cache_service.dart';
 import 'package:squadchat/colors.dart';
 import 'package:squadchat/composition_root.dart';
 import 'package:squadchat/theme.dart';
@@ -18,6 +19,13 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
   UserService userService;
+  LocalCache _localCacheService;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -174,5 +182,10 @@ class _UserProfileState extends State<UserProfile> {
     await CompositionRoot.deleteUser();
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => Intro()));
+  }
+
+  _fetchUserData() {
+    Map userDetails = _localCacheService.fetch('USER');
+    print(userDetails.toString());
   }
 }

@@ -8,8 +8,6 @@ import 'package:squadchat/states/message/message_bloc.dart';
 import 'package:squadchat/views/screens/chat_home/active/active.dart';
 import 'package:squadchat/views/screens/chat_home/chats/chat.dart';
 import 'package:squadchat/views/screens/chat_home/home_router_contract.dart';
-import 'package:squadchat/views/screens/user_profile/user_profile.dart';
-import 'package:squadchat/views/widgets/chat_home/home_profile_image.dart';
 import 'package:squadchat/views/widgets/common/header_status.dart';
 
 class Home extends StatefulWidget {

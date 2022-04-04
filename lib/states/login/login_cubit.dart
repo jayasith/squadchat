@@ -10,7 +10,7 @@ class LoginCubit extends Cubit<LoginState> {
   final ImageUploaderService _imageUploaderService;
   final ILocalCache _localCache;
 
-  LoginCubit(this._userService, this._imageUploaderService,this._localCache)
+  LoginCubit(this._userService, this._imageUploaderService, this._localCache)
       : super(LoginInitial());
 
   Future<void> connect(String name, File profileImage) async {
@@ -22,14 +22,16 @@ class LoginCubit extends Cubit<LoginState> {
       active: true,
       lastseen: DateTime.now(),
     );
+
     final createdUser = await _userService.connect(user);
-    final userJson ={
-      'username' : createdUser.username,
-      'active'    : true,
-      'photo_url' : createdUser.photoUrl,
-      'id'        : createdUser.id 
+    final userJson = {
+      'username': createdUser.username,
+      'active': true,
+      'photo_url': createdUser.photoUrl,
+      'id': createdUser.id
     };
-    await _localCache.save('USER',userJson);
+
+    await _localCache.save('USER', userJson);
     emit(LoginSuccess(createdUser));
   }
 }
