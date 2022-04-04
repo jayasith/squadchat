@@ -7,6 +7,7 @@ class ChatViewModel extends BaseViewModel {
   final IDataSource _dataSource;
   String _chatId = '';
   int otherMessages = 0;
+
   String get chatId => _chatId;
 
   ChatViewModel(this._dataSource) : super(_dataSource);
