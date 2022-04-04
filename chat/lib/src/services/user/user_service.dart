@@ -10,6 +10,7 @@ class UserService implements IUserService {
 
   @override
   Future<User> connect(User user) async {
+    print('connecting user...');
     var data = user.toJson();
 
     if (user.id != null) data['id'] = user.id;
@@ -18,6 +19,37 @@ class UserService implements IUserService {
         data, {'conflict': 'update', 'return_changes': true}).run(_connection);
 
     return User.fromJson(result['changes'].first['new_val']);
+  }
+
+  @override
+  Future<void> disconnect(String userId) async {
+    print('disconnecting user...');
+    try {
+      await rethinkdb.table('users').filter({'id': userId}).update({
+        'active': false,
+        'last_seen': DateTime.now(),
+      }).run(_connection);
+    } catch (e) {
+      print(e);
+    }
+    // _connection.close();
+  }
+
+  @override
+  Future<void> reconnect(String userId) async {
+    print('reconnecting user...');
+    try {
+      await rethinkdb.table('users').filter({
+        'id': userId,
+      }).update({
+        'active': true,
+        'last_seen': DateTime.now(),
+      }).run(_connection);
+    } catch (e) {
+      print(e);
+    }
+
+    // _connection.close();
   }
 
   @override
@@ -30,6 +62,17 @@ class UserService implements IUserService {
   }
 
   @override
+  Future<void> deleteUser(String userId) async {
+    print('removing user...');
+    await rethinkdb
+        .table('users')
+        .filter({'id': userId})
+        .delete()
+        .run(_connection);
+    _connection.close();
+  }
+
+@override
   Future<List<User>> fetch(List<String> chatId) async {
     Cursor users = await rethinkdb
         .table('users')
@@ -38,5 +81,15 @@ class UserService implements IUserService {
 
     List userList = await users.toList();
     return userList.map((user) => User.fromJson(user)).toList();
+  }
+  
+  @override
+  Future<User> fetchUser(String userId) async {
+    final user = await rethinkdb
+        .table('users')
+        .filter({'id': userId})
+        .pluck('username', 'active', 'last_seen')
+        .run(_connection);
+    return User.fromJson(user);
   }
 }

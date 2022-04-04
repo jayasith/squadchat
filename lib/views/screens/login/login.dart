@@ -7,9 +7,12 @@ import 'package:squadchat/states/login/profile_image_cubit.dart';
 import 'package:squadchat/views/widgets/common/custom_text_field.dart';
 import 'package:squadchat/views/widgets/login/logo.dart';
 import 'package:squadchat/views/widgets/login/profile_image_upload.dart';
+import 'package:squadchat/views/screens/login/login_router_contract.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key key}) : super(key: key);
+  final ILoginRouter loginRouter;
+  // ignore: use_key_in_widget_constructors, prefer_const_constructors_in_immutables
+  Login(this.loginRouter);
 
   @override
   State<Login> createState() => _LoginState();
@@ -64,7 +67,7 @@ class _LoginState extends State<Login> {
 
                   await _connectSession();
                 },
-                child: BlocBuilder<LoginCubit, LoginState>(
+                child: BlocConsumer<LoginCubit, LoginState>(
                     builder: (context, state) => state is Loading
                         ? const Padding(
                             padding: EdgeInsets.all(8),
@@ -81,7 +84,13 @@ class _LoginState extends State<Login> {
                               style: TextStyle(
                                 fontSize: 18,
                               ),
-                            ))),
+                            )),
+                    listener: (_, state) {
+                      if (state is LoginSuccess)
+                        // ignore: curly_braces_in_flow_control_structures
+                        widget.loginRouter
+                            .onSessionSuccess(context, state.user);
+                    }),
                 style: ElevatedButton.styleFrom(
                     primary: primary,
                     shape: RoundedRectangleBorder(

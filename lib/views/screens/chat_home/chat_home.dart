@@ -7,62 +7,35 @@ import 'package:squadchat/states/home/home_state.dart';
 import 'package:squadchat/states/message/message_bloc.dart';
 import 'package:squadchat/views/screens/chat_home/active/active.dart';
 import 'package:squadchat/views/screens/chat_home/chats/chat.dart';
-import 'package:squadchat/views/widgets/chat_home/home_profile_image.dart';
+import 'package:squadchat/views/screens/chat_home/home_router_contract.dart';
+import 'package:squadchat/views/widgets/common/header_status.dart';
 
-class Home extends StatefulWidget  {
-  const Home();
+class Home extends StatefulWidget {
+  final User user;
+  final IHomeRouter router;
+  const Home(this.user, this.router);
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
+  User _user;
   @override
   void initState() {
     super.initState();
-    context.read<HomeBloc>().activeUsers();
-    context.read<ChatBloc>().chats();
-    final user = User.fromJson({
-      "id": "24af83d8-e403-4f25-a469-c07a5cc6de23",
-      "active": true,
-      "photo_url": "",
-      "last_seen": DateTime.now()
-    });
-    context.read<MessageBloc>().add(MessageEvent.onSubscribed(user));
+    _user = widget.user;
+    _initialSetup();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return DefaultTabController(
       length: 2,
       child: Scaffold(
           appBar: AppBar(
-              title: Container(
-                  width: double.maxFinite,
-                  child: Row(children: [
-                    const HomeProfileImage(
-                      imageUrl: "https://i.imgur.com/ZD73Ov7.jpg",
-                      userOnline: true,
-                    ),
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text('Chamindu',
-                              style:
-                                  Theme.of(context).textTheme.caption.copyWith(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold,
-                                      )),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text('online',
-                              style: Theme.of(context).textTheme.caption),
-                        )
-                      ],
-                    )
-                  ])),
+              title: HeaderStatus(_user.username, _user.photoUrl, _user.active),
               bottom: TabBar(
                   indicatorPadding: const EdgeInsets.symmetric(vertical: 10.0),
                   tabs: [
@@ -90,13 +63,24 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                       ),
                     ))
                   ])),
-          body: const Padding(
+          body: Padding(
             padding: EdgeInsets.symmetric(horizontal: 6.0),
             child: TabBarView(
-              children: [Chats(), Active()],
+              children: [
+                Chats(_user, widget.router),
+                Active(widget.router, _user)
+              ],
             ),
           )),
     );
+  }
+
+  _initialSetup() async {
+    final user =
+        (!_user.active ? await context.read<HomeBloc>().connect() : _user);
+    context.read<HomeBloc>().activeUsers(user);
+    context.read<ChatBloc>().chats();
+    context.read<MessageBloc>().add(MessageEvent.onSubscribed(user));
   }
 
   @override

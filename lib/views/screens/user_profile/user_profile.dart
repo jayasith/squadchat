@@ -1,8 +1,14 @@
+import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
+import 'package:squadchat/cache/local_cache_service.dart';
 import 'package:squadchat/colors.dart';
+import 'package:squadchat/composition_root.dart';
 import 'package:squadchat/theme.dart';
+import 'package:squadchat/views/screens/intro/intro.dart';
+import 'package:squadchat/views/widgets/chat_home/user_online_indicator.dart';
+import 'package:squadchat/views/widgets/common/custom_confirmation_dialog.dart';
 import 'package:squadchat/views/widgets/login/logo.dart';
-import 'package:squadchat/views/screens/user_profile/user_data.dart';
+import 'package:squadchat/models/user_data.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key key}) : super(key: key);
@@ -12,6 +18,15 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  UserService userService;
+  LocalCache _localCacheService;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,10 +44,13 @@ class _UserProfileState extends State<UserProfile> {
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Icon(
-                      Icons.arrow_back,
-                      color: primary,
-                      size: 30,
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: const Icon(
+                        Icons.arrow_back,
+                        color: primary,
+                        size: 30,
+                      ),
                     ),
                     Row(
                       children: [
@@ -61,20 +79,32 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                   ]),
             ),
-            const Spacer(),
+            const Spacer(flex: 2),
             SizedBox(
               height: 126,
               width: 126,
               child: CircleAvatar(
                   backgroundColor: Colors.transparent,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(126),
-                      child: Image.network(
-                          'http://10.0.2.2:3000/public/uploads/images/profile/scaled_image_picker887393490857838263.jpg',
-                          width: 126,
-                          height: 126,
-                          fit: BoxFit.cover))),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      ClipRRect(
+                          borderRadius: BorderRadius.circular(126),
+                          child: Image.network(
+                              'http://10.0.2.2:3000/public/uploads/images/profile/scaled_image_picker887393490857838263.jpg',
+                              width: 126,
+                              height: 126,
+                              fit: BoxFit.cover)),
+                      const Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: UserOnlineIndicator(),
+                          ))
+                    ],
+                  )),
             ),
+            const Spacer(flex: 1),
             Flexible(
               flex: 8,
               child: ListView.builder(
@@ -90,9 +120,12 @@ class _UserProfileState extends State<UserProfile> {
                                 ? Colors.black
                                 : Colors.white),
                       ),
-                      trailing: const IconButton(
-                        icon: Icon(Icons.analytics),
-                        onPressed: null,
+                      trailing: Text(
+                        item.value,
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            color: isLightTheme(context)
+                                ? Colors.black
+                                : Colors.white),
                       ),
                     );
                   }),
@@ -100,7 +133,17 @@ class _UserProfileState extends State<UserProfile> {
             Padding(
               padding: const EdgeInsets.all(16),
               child: ElevatedButton(
-                onPressed: () async {},
+                onPressed: () {
+                  var alert = CustomConfirmationDialog(
+                    title: 'Delete Account',
+                    content: 'Do you want to delete your account ?',
+                    okFunction: _confirmationOk,
+                  );
+
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) => alert);
+                },
                 child: const Icon(Icons.delete_forever),
                 style: ElevatedButton.styleFrom(
                     primary: primary,
@@ -133,5 +176,16 @@ class _UserProfileState extends State<UserProfile> {
         ),
       ],
     );
+  }
+
+  _confirmationOk() async {
+    await CompositionRoot.deleteUser();
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => Intro()));
+  }
+
+  _fetchUserData() {
+    Map userDetails = _localCacheService.fetch('USER');
+    print(userDetails.toString());
   }
 }

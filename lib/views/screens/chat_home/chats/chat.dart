@@ -1,9 +1,13 @@
+import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:squadchat/states/message/message_bloc.dart';
+import 'package:squadchat/states/typing/typing_notification_bloc.dart';
 import 'package:squadchat/theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:squadchat/views/screens/chat_home/home_router.dart';
+import 'package:squadchat/views/screens/chat_home/home_router_contract.dart';
 
 import '../../../../colors.dart';
 import '../../../../models/chat.dart';
@@ -11,25 +15,32 @@ import '../../../../states/home/chat_bloc.dart';
 import '../../../widgets/chat_home/home_profile_image.dart';
 
 class Chats extends StatefulWidget {
-  const Chats();
-
+  final User user;
+  final IHomeRouter homeRouter;
+  const Chats(this.user, this.homeRouter);
   @override
   _ChatsState createState() => _ChatsState();
 }
 
 class _ChatsState extends State<Chats> {
   var chats = [];
+  final typingEvents = [];
 
   @override
   void initState() {
     super.initState();
     _updateChatMessage();
+    context.read<ChatBloc>().chats();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChatBloc, List<Chat>>(builder: (_, chats) {
       this.chats = chats;
+      if (this.chats.isEmpty) return Container();
+      context.read<TypingNotificationBloc>().add(
+          TypingNotificationEvent.onSubscribed(widget.user,
+              usersWithChat: chats.map((e) => e.from.id).toList()));
       return _buildChatListView();
     });
   }
@@ -37,7 +48,14 @@ class _ChatsState extends State<Chats> {
   _buildChatListView() {
     return ListView.separated(
         padding: const EdgeInsets.only(top: 10.0, right: 16.0),
-        itemBuilder: (_, index) => _chatRow(chats[index]),
+        itemBuilder: (_, index) => GestureDetector(
+              child: _chatRow(chats[index]),
+              onTap: () async {
+                await this.widget.homeRouter.onShowMessageThread(
+                    context, chats[index].from, widget.user,
+                    chatId: chats[index].id);
+              },
+            ),
         separatorBuilder: (_, __) => Divider(
               color: isLightTheme(context) ? Colors.white : Colors.black,
               height: 0.0,
@@ -63,13 +81,33 @@ class _ChatsState extends State<Chats> {
             style: Theme.of(context).textTheme.subtitle2.copyWith(
                 fontWeight: FontWeight.bold,
                 color: isLightTheme(context) ? Colors.black : Colors.white)),
-        subtitle: Text(chat.mostRecent.message.contents,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-            softWrap: true,
-            style: Theme.of(context).textTheme.caption.copyWith(
-                color:
-                    isLightTheme(context) ? Colors.black54 : Colors.white70)),
+        subtitle: BlocBuilder<TypingNotificationBloc, TypingNotificationState>(
+            builder: (_, state) {
+          if (state is TypingNotificationReceivedSuccess &&
+              state.event.event == Typing.start &&
+              state.event.from == chat.from.id)
+            this.typingEvents.add(state.event.from);
+
+          if (state is TypingNotificationReceivedSuccess &&
+              state.event.event == Typing.stop &&
+              state.event.from == chat.from.id)
+            this.typingEvents.add(state.event.to);
+
+          if (this.typingEvents.contains(chat.from.id))
+            return Text('Typing ...',
+                style: Theme.of(context)
+                    .textTheme
+                    .caption
+                    .copyWith(fontStyle: FontStyle.italic));
+
+          return Text(chat.mostRecent.message.contents,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              softWrap: true,
+              style: Theme.of(context).textTheme.caption.copyWith(
+                  color:
+                      isLightTheme(context) ? Colors.black54 : Colors.white70));
+        }),
         trailing: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -102,7 +140,7 @@ class _ChatsState extends State<Chats> {
                               .copyWith(color: Colors.white),
                         ),
                       )
-                    : Container(),
+                    : SizedBox.shrink(),
               ),
             )
           ],
