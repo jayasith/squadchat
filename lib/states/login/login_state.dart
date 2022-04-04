@@ -17,6 +17,7 @@ class LoginSuccess extends LoginState {
   final User user;
 
   LoginSuccess(this.user);
+
   @override
   List<Object> get props => [user];
 }
