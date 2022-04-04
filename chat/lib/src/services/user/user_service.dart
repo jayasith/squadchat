@@ -21,32 +21,12 @@ class UserService implements IUserService {
   }
 
   @override
-  Future<void> disconnect(User user) async {
-    await rethinkdb.table('users').update({
-      'id': user.id,
-      'active': false,
-      'last_seen': DateTime.now(),
-    }).run(_connection);
-    _connection.close();
-  }
-
-  @override
   Future<List<User>> online() async {
     Cursor users = await rethinkdb
         .table('users')
         .filter({'active': true}).run(_connection);
     final userList = await users.toList();
     return userList.map((user) => User.fromJson(user)).toList();
-  }
-
-  @override
-  Future<void> delete(User user) async {
-    await rethinkdb
-        .table('users')
-        .filter({'id': user.id})
-        .delete()
-        .run(_connection);
-    _connection.close();
   }
 
   @override
