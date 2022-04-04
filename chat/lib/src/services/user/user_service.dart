@@ -21,13 +21,34 @@ class UserService implements IUserService {
   }
 
   @override
-  Future<void> disconnect(User user) async {
-    await rethinkdb.table('users').update({
-      'id': user.id,
-      'active': false,
-      'last_seen': DateTime.now(),
-    }).run(_connection);
-    _connection.close();
+  Future<void> disconnect(String userId) async {
+    print('disconnecting user...');
+    try {
+      await rethinkdb.table('users').filter({'id': userId}).update({
+        'active': false,
+        'last_seen': DateTime.now(),
+      }).run(_connection);
+    } catch (e) {
+      print(e);
+    }
+    // _connection.close();
+  }
+
+  @override
+  Future<void> reconnect(String userId) async {
+    print('reconnecting user...');
+    try {
+      await rethinkdb.table('users').filter({
+        'id': userId,
+      }).update({
+        'active': true,
+        'last_seen': DateTime.now(),
+      }).run(_connection);
+    } catch (e) {
+      print(e);
+    }
+
+    // _connection.close();
   }
 
   @override
@@ -37,5 +58,32 @@ class UserService implements IUserService {
         .filter({'active': true}).run(_connection);
     final userList = await users.toList();
     return userList.map((user) => User.fromJson(user)).toList();
+  }
+
+  @override
+  Future<void> deleteUser(String userId) async {
+    print(userId);
+    await rethinkdb
+        .table('users')
+        .filter({'id': userId})
+        .delete()
+        .run(_connection);
+    _connection.close();
+  }
+
+  @override
+  Future<User> fetch(String chatId) async {
+    final user = await rethinkdb.table('users').get(chatId).run(_connection);
+    return User.fromJson(user);
+  }
+
+  @override
+  Future<User> fetchUser(String userId) async {
+    final user = await rethinkdb
+        .table('users')
+        .filter({'id': userId})
+        .pluck('username', 'active', 'last_seen')
+        .run(_connection);
+    return User.fromJson(user);
   }
 }

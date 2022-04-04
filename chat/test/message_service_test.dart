@@ -17,7 +17,8 @@ void main() {
     final EncryptionService encryption =
         EncryptionService(Encrypter(AES(Key.fromLength(32))));
     await createDb(rethinkdb, connection);
-    messageService = MessageService(rethinkdb, connection, encryption);
+    messageService =
+        MessageService(rethinkdb, connection, encryptionService: encryption);
   });
 
   tearDown(() async {
@@ -48,7 +49,7 @@ void main() {
       contents: 'test message',
     );
 
-    final bool isSent = await messageService.send(message);
+    final Message isSent = await messageService.send(message);
     expect(isSent, true);
   }));
 
