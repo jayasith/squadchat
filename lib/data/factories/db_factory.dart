@@ -1,7 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-class  LocalDatabase{
+class LocalDatabase {
   Future<Database> createDatabase() async {
     String databasesPath = await getDatabasesPath();
     String dbPath = join(databasesPath, 'squadchat.db');
@@ -18,11 +18,15 @@ class  LocalDatabase{
   _createChatTable(Database db) async {
     await db
         .execute(
-      """CREATE TABLE chats(
+          """CREATE TABLE chats(
             id TEXT PRIMARY KEY,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+            name TEXT,
+            type TEXT,
+            member TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
             )""",
-    )
+        )
         .then((_) => print('creating table chats...'))
         .catchError((e) => print('error creating chats table: $e'));
   }

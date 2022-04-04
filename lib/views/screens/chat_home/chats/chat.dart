@@ -67,10 +67,17 @@ class _ChatsState extends State<Chats> {
   _chatRow(Chat chat) => ListTile(
         contentPadding: const EdgeInsets.only(left: 16.0),
         leading: HomeProfileImage(
-          imageUrl: chat.from.photoUrl,
-          userOnline: chat.from.active,
+          imageUrl: chat.type == ChatType.individual
+              ? chat.members.first.photoUrl
+              : null,
+          userOnline: chat.type == ChatType.individual
+              ? chat.members.first.active
+              : false,
         ),
-        title: Text(chat.from.username,
+        title: Text(
+            chat.type == ChatType.individual
+                ? chat.members.first.username
+                : chat.name,
             style: Theme.of(context).textTheme.subtitle2.copyWith(
                 fontWeight: FontWeight.bold,
                 color: isLightTheme(context) ? Colors.black : Colors.white)),

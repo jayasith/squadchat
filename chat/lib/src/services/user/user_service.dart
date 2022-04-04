@@ -72,12 +72,17 @@ class UserService implements IUserService {
     _connection.close();
   }
 
-  @override
-  Future<User> fetch(String chatId) async {
-    final user = await rethinkdb.table('users').get(chatId).run(_connection);
-    return User.fromJson(user);
-  }
+@override
+  Future<List<User>> fetch(List<String> chatId) async {
+    Cursor users = await rethinkdb
+        .table('users')
+        .getAll(rethinkdb.args(chatId))
+        .filter({'active': true}).run(_connection);
 
+    List userList = await users.toList();
+    return userList.map((user) => User.fromJson(user)).toList();
+  }
+  
   @override
   Future<User> fetchUser(String userId) async {
     final user = await rethinkdb
