@@ -6,6 +6,8 @@ import 'package:squadchat/states/message/message_bloc.dart';
 import 'package:squadchat/states/typing/typing_notification_bloc.dart';
 import 'package:squadchat/theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:squadchat/views/screens/chat_home/home_router.dart';
+import 'package:squadchat/views/screens/chat_home/home_router_contract.dart';
 
 import '../../../../colors.dart';
 import '../../../../models/chat.dart';
@@ -14,7 +16,8 @@ import '../../../widgets/chat_home/home_profile_image.dart';
 
 class Chats extends StatefulWidget {
   final User user;
-  const Chats(this.user);
+  final IHomeRouter homeRouter;
+  const Chats(this.user, this.homeRouter);
   @override
   _ChatsState createState() => _ChatsState();
 }
@@ -45,7 +48,14 @@ class _ChatsState extends State<Chats> {
   _buildChatListView() {
     return ListView.separated(
         padding: const EdgeInsets.only(top: 10.0, right: 16.0),
-        itemBuilder: (_, index) => _chatRow(chats[index]),
+        itemBuilder: (_, index) => GestureDetector(
+              child: _chatRow(chats[index]),
+              onTap: () async {
+                await this.widget.homeRouter.onShowMessageThread(
+                    context, chats[index].from, widget.user,
+                    chatId: chats[index].id);
+              },
+            ),
         separatorBuilder: (_, __) => Divider(
               color: isLightTheme(context) ? Colors.white : Colors.black,
               height: 0.0,
