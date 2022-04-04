@@ -12,6 +12,7 @@ import 'package:squadchat/views/widgets/chat_home/home_profile_image.dart';
 
 class Home extends StatefulWidget {
   final User user;
+
   const Home(this.user);
 
   @override
