@@ -86,7 +86,15 @@ class _MessageThreadState extends State<MessageThread> {
           },
           child: Column(
             children: [
-              Flexible(flex: 6, child: Container()),
+              Flexible(
+                  flex: 6,
+                  child: BlocBuilder<MessageThreadCubit, List<LocalMessage>>(
+                    builder: (_, message) {
+                      this.messages = messages;
+                      if (this.messages.isEmpty) return SizedBox.shrink();
+                      return _buildListofMessages();
+                    },
+                  )),
               Expanded(
                   child: Container(
                       height: 100,
@@ -135,6 +143,29 @@ class _MessageThreadState extends State<MessageThread> {
           ),
         ));
   }
+
+  _buildListofMessages() => ListView.builder(
+        padding: EdgeInsets.only(top: 16.0, left: 16.0, bottom: 20.0),
+        itemBuilder: (_, index) {
+          if (messages[index].message.from == receiver.id) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: ReceievrMessage(messages[index], receiver.photoUrl),
+            );
+          } else {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: SenderMessage(
+                messages[index],
+              ),
+            );
+          }
+        },
+        itemCount: messages.length,
+        controller: _scrollController,
+        physics: AlwaysScrollableScrollPhysics(),
+        addAutomaticKeepAlives: true,
+      );
 
   _buildMessageInput(BuildContext context) {
     final _border = OutlineInputBorder(
