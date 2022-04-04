@@ -102,6 +102,7 @@ class CompositionRoot {
   static void deleteUser() async {
     final user = _localCache.fetch('USER');
     await _userService.deleteUser(user['id'].toString());
+    await _localCache.remove();
   }
 
   static Future<User> fetchUser() async {
