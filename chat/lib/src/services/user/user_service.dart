@@ -32,7 +32,6 @@ class UserService implements IUserService {
     } catch (e) {
       print(e);
     }
-    // _connection.close();
   }
 
   @override
@@ -48,8 +47,6 @@ class UserService implements IUserService {
     } catch (e) {
       print(e);
     }
-
-    // _connection.close();
   }
 
   @override
@@ -58,6 +55,7 @@ class UserService implements IUserService {
         .table('users')
         .filter({'active': true}).run(_connection);
     final userList = await users.toList();
+
     return userList.map((user) => User.fromJson(user)).toList();
   }
 
@@ -75,16 +73,14 @@ class UserService implements IUserService {
   @override
   Future<User> fetch(String chatId) async {
     final user = await rethinkdb.table('users').get(chatId).run(_connection);
+
     return User.fromJson(user);
   }
 
   @override
   Future<User> fetchUser(String userId) async {
-    final user = await rethinkdb
-        .table('users')
-        .filter({'id': userId})
-        .pluck('username', 'active', 'last_seen')
-        .run(_connection);
+    final user = await rethinkdb.table('users').get(userId).run(_connection);
+
     return User.fromJson(user);
   }
 }
