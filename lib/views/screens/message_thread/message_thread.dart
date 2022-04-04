@@ -12,6 +12,8 @@ import 'package:squadchat/states/receipt/receipt_bloc.dart';
 import 'package:squadchat/states/typing/typing_notification_bloc.dart';
 import 'package:squadchat/theme.dart';
 import 'package:squadchat/views/widgets/common/header_status.dart';
+import 'package:squadchat/views/widgets/message_thread/receiver_message.dart';
+import 'package:squadchat/views/widgets/message_thread/sender_message.dart';
 
 class MessageThread extends StatefulWidget {
   final User receiver;
