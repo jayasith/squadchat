@@ -1,8 +1,8 @@
 import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:squadchat/colors.dart';
 import 'package:squadchat/composition_root.dart';
-import 'package:squadchat/data/data_sources/data_source.dart';
 import 'package:squadchat/data/factories/db_factory.dart';
 import 'package:squadchat/theme.dart';
 import 'package:squadchat/views/screens/intro/intro.dart';
@@ -43,46 +43,53 @@ class _UserProfileState extends State<UserProfile> {
             const SizedBox(
               height: 30,
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: primary,
-                        size: 30,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Image.asset(
-                            'assets/images/logo.png',
-                            scale: 5,
+            userDetails == null || photoUrl == null
+                ? const Center(
+                    child: Text('Loading...'),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () => Navigator.pop(context),
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: primary,
+                              size: 30,
+                            ),
                           ),
-                        ),
-                        Text(
-                          "Squadchat",
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headline5.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: isLightTheme(context)
-                                  ? Colors.black
-                                  : Colors.white),
-                        ),
-                      ],
-                    ),
-                    const Icon(
-                      Icons.logout_rounded,
-                      color: primary,
-                      size: 30,
-                    ),
-                  ]),
-            ),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: Image.asset(
+                                  'assets/images/logo.png',
+                                  scale: 5,
+                                ),
+                              ),
+                              Text(
+                                "Squadchat",
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: isLightTheme(context)
+                                            ? Colors.black
+                                            : Colors.white),
+                              ),
+                            ],
+                          ),
+                          const Icon(
+                            Icons.logout_rounded,
+                            color: primary,
+                            size: 30,
+                          ),
+                        ]),
+                  ),
             const Spacer(flex: 2),
             SizedBox(
               height: 126,
@@ -106,31 +113,41 @@ class _UserProfileState extends State<UserProfile> {
                   )),
             ),
             const Spacer(flex: 1),
-            Flexible(
-              flex: 8,
-              child: ListView.builder(
-                  itemCount: userDetails.length,
-                  itemBuilder: (context, index) {
-                    UserData item = userDetails.elementAt(index);
+            userDetails == null || photoUrl == null
+                ? const Center(
+                    child: Text('Loading...'),
+                  )
+                : Flexible(
+                    flex: 8,
+                    child: ListView.builder(
+                        itemCount: userDetails.length,
+                        itemBuilder: (context, index) {
+                          UserData item = userDetails.elementAt(index);
 
-                    return ListTile(
-                      title: Text(
-                        item.dataAttribute,
-                        style: Theme.of(context).textTheme.bodyText1.copyWith(
-                            color: isLightTheme(context)
-                                ? Colors.black
-                                : Colors.white),
-                      ),
-                      trailing: Text(
-                        item.value,
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            color: isLightTheme(context)
-                                ? Colors.black
-                                : Colors.white),
-                      ),
-                    );
-                  }),
-            ),
+                          return ListTile(
+                            title: Text(
+                              item.dataAttribute,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(
+                                      color: isLightTheme(context)
+                                          ? Colors.black
+                                          : Colors.white),
+                            ),
+                            trailing: Text(
+                              item.value,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                      color: isLightTheme(context)
+                                          ? Colors.black
+                                          : Colors.white),
+                            ),
+                          );
+                        }),
+                  ),
             Padding(
               padding: const EdgeInsets.all(16),
               child: ElevatedButton(
@@ -181,7 +198,6 @@ class _UserProfileState extends State<UserProfile> {
 
   _confirmationOk() async {
     await CompositionRoot.deleteUser();
-    await _localDatabase.removeDB();
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => Intro()));
   }
@@ -196,11 +212,10 @@ class _UserProfileState extends State<UserProfile> {
           dataAttribute: "Active Status",
           value: _user.active ? "Active" : "Inactive",
         ),
-        UserData(dataAttribute: "Last Seen", value: _user.lastseen.toString()),
+        UserData(
+            dataAttribute: "Last Seen",
+            value: DateFormat.yMd().add_jm().format(_user.lastseen)),
       ];
-    });
-
-    setState(() {
       photoUrl = _user.photoUrl;
     });
   }
