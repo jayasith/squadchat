@@ -12,7 +12,7 @@ abstract class BaseViewModel {
       final chat = Chat(message.chatId, ChatType.individual, membersId: [
         {message.chatId: ""}
       ]);
-      await _createNewChat(chat);
+      await createNewChat(chat);
     }
     await _dataSource.addMessage(message);
   }

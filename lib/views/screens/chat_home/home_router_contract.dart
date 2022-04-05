@@ -9,5 +9,5 @@ abstract class IHomeRouter {
       Chat chat);
 
   Future<void> onShowGroupCreation(BuildContext context, List<User> actives,
-      User user)
+      User user);
 }

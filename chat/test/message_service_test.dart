@@ -48,7 +48,7 @@ void main() {
       contents: 'test message',
     );
 
-    final Message isSent = await messageService.send(message);
+    final Message isSent = await messageService.send([message]);
     expect(isSent, true);
   }));
 
@@ -96,11 +96,11 @@ void main() {
 
     await messageService.send([message1]);
     await messageService.send([message2]).whenComplete(
-          () => messageService.messages(activeUser: user2).listen(
-                expectAsync1((message) {
-                  expect(message.to, user2.id);
-                }, count: 2),
-              ),
-        );
+      () => messageService.messages(activeUser: user2).listen(
+            expectAsync1((message) {
+              expect(message.to, user2.id);
+            }, count: 2),
+          ),
+    );
   });
 }

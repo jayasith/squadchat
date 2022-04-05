@@ -35,7 +35,7 @@ class Chat {
   toMap() => {
         'id': id,
         'name': name,
-        'type': type,
+        'type': type.value(),
         'members': membersId.map((e) => jsonEncode(e)).join(",")
       };
 

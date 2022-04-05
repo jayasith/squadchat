@@ -41,14 +41,14 @@ class DataSource implements IDataSource {
   @override
   Future<List<Chat>> findAllChats() {
     return _db.transaction((txn) async {
-      final listOfChatMap = await txn.query('chat', orderBy: 'updated_at DESC');
+      final listOfChatMap = await txn.query('chats', orderBy: 'updated_at DESC');
 
       if (listOfChatMap.isEmpty) return [];
 
       return await Future.wait(listOfChatMap.map<Future<Chat>>((row) async {
         final unread = Sqflite.firstIntValue(await txn.rawQuery(
-            'SELECT COUNT(*) FROM MESSAGE WHERE chat_id = ? AND receipt = ?',
-            [row['id'], 'deliverred']));
+            'SELECT COUNT(*) FROM MESSAGES WHERE chat_id = ? AND receipt = ?',
+            [row['id'], 'delivered']));
 
         final mostRecentMessage = await txn.query('messages',
             where: 'chat_id = ?',

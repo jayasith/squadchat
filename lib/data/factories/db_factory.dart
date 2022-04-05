@@ -22,7 +22,7 @@ class LocalDatabase {
             id TEXT PRIMARY KEY,
             name TEXT,
             type TEXT,
-            member TEXT,
+            members TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
             )""",
