@@ -43,6 +43,8 @@ class CompositionRoot {
   static TypingEventService _typingEventService;
   static ChatBloc _chatsBloc;
 
+  LocalCache get localCache => _localCache;
+
   static configure() async {
     _rethinkdb = Rethinkdb();
     _connection = await _rethinkdb.connect(host: UrlConfig().host, port: 28015);
@@ -99,6 +101,23 @@ class CompositionRoot {
     ], child: Home(user, router));
   }
 
+  static Widget composeMessageThreadUi(User receiver, User user,
+      {String chatId}) {
+    ChatViewModel viewModel = ChatViewModel(_iDataSource);
+    MessageThreadCubit messageThreadCubit = MessageThreadCubit(viewModel);
+    IReceiptService receiptService = ReceiptService(_rethinkdb, _connection);
+    ReceiptBloc receiptBloc = ReceiptBloc(receiptService);
+
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (BuildContext context) => messageThreadCubit),
+          BlocProvider(create: (BuildContext context) => receiptBloc)
+        ],
+        child: MessageThread(
+            receiver, user, _messageBloc, _chatsBloc, _typingNotificationBloc,
+            chatId: chatId));
+  }
+
   static void deleteUser() async {
     final user = _localCache.fetch('USER');
     await _userService.deleteUser(user['id'].toString());
@@ -118,22 +137,5 @@ class CompositionRoot {
   static void reconnectUser() async {
     final user = _localCache.fetch('USER');
     await _userService.reconnect(user['id'].toString());
-  }
-
-  static Widget composeMessageThreadUi(User receiver, User user,
-      {String chatId}) {
-    ChatViewModel viewModel = ChatViewModel(_iDataSource);
-    MessageThreadCubit messageThreadCubit = MessageThreadCubit(viewModel);
-    IReceiptService receiptService = ReceiptService(_rethinkdb, _connection);
-    ReceiptBloc receiptBloc = ReceiptBloc(receiptService);
-
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (BuildContext context) => messageThreadCubit),
-          BlocProvider(create: (BuildContext context) => receiptBloc)
-        ],
-        child: MessageThread(
-            receiver, user, _messageBloc, _chatsBloc, _typingNotificationBloc,
-            chatId: chatId));
   }
 }

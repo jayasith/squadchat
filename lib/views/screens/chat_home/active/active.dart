@@ -11,6 +11,7 @@ import '../../../widgets/chat_home/home_profile_image.dart';
 class Active extends StatefulWidget {
   final User user;
   final IHomeRouter homeRouter;
+
   Active(this.homeRouter, this.user);
 
   @override

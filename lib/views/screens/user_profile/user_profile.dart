@@ -214,7 +214,7 @@ class _UserProfileState extends State<UserProfile> {
         ),
         UserData(
             dataAttribute: "Last Seen",
-            value: DateFormat.yMd().add_jm().format(_user.lastseen)),
+            value: DateFormat.yMd().add_jm().format(DateTime.now())),
       ];
       photoUrl = _user.photoUrl;
     });

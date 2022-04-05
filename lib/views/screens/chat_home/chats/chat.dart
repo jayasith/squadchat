@@ -18,6 +18,7 @@ class Chats extends StatefulWidget {
   final User user;
   final IHomeRouter homeRouter;
   const Chats(this.user, this.homeRouter);
+
   @override
   _ChatsState createState() => _ChatsState();
 }
@@ -37,7 +38,8 @@ class _ChatsState extends State<Chats> {
   Widget build(BuildContext context) {
     return BlocBuilder<ChatBloc, List<Chat>>(builder: (_, chats) {
       this.chats = chats;
-      if (this.chats.isEmpty) return Container();
+      if (this.chats.isEmpty)
+        return Center(child: Text('No previous conversations found'));
       context.read<TypingNotificationBloc>().add(
           TypingNotificationEvent.onSubscribed(widget.user,
               usersWithChat: chats.map((e) => e.from.id).toList()));
