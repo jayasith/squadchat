@@ -48,4 +48,10 @@ class LocalDatabase {
         .then((_) => print('creating table messages'))
         .catchError((e) => print('error creating messages table: $e'));
   }
+
+  Future<void> removeDB() async {
+    deleteDatabase('squadchat.db')
+        .then((_) => print('deleting database messages'))
+        .catchError((e) => print('error deleting database: $e'));
+  }
 }

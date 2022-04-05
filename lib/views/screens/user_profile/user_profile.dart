@@ -1,8 +1,9 @@
 import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
-import 'package:squadchat/cache/local_cache_service.dart';
+import 'package:intl/intl.dart';
 import 'package:squadchat/colors.dart';
 import 'package:squadchat/composition_root.dart';
+import 'package:squadchat/data/factories/db_factory.dart';
 import 'package:squadchat/theme.dart';
 import 'package:squadchat/views/screens/intro/intro.dart';
 import 'package:squadchat/views/widgets/chat_home/user_online_indicator.dart';
@@ -18,13 +19,16 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  User _user;
+  String photoUrl;
+  List<UserData> userDetails;
   UserService userService;
-  LocalCache _localCacheService;
+  LocalDatabase _localDatabase;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
+    _fetchUser();
   }
 
   @override
@@ -39,46 +43,53 @@ class _UserProfileState extends State<UserProfile> {
             const SizedBox(
               height: 30,
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: primary,
-                        size: 30,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Image.asset(
-                            'assets/images/logo.png',
-                            scale: 5,
+            userDetails == null || photoUrl == null
+                ? const Center(
+                    child: Text('Loading...'),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () => Navigator.pop(context),
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: primary,
+                              size: 30,
+                            ),
                           ),
-                        ),
-                        Text(
-                          "Squadchat",
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headline5.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: isLightTheme(context)
-                                  ? Colors.black
-                                  : Colors.white),
-                        ),
-                      ],
-                    ),
-                    const Icon(
-                      Icons.logout_rounded,
-                      color: primary,
-                      size: 30,
-                    ),
-                  ]),
-            ),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: Image.asset(
+                                  'assets/images/logo.png',
+                                  scale: 5,
+                                ),
+                              ),
+                              Text(
+                                "Squadchat",
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: isLightTheme(context)
+                                            ? Colors.black
+                                            : Colors.white),
+                              ),
+                            ],
+                          ),
+                          const Icon(
+                            Icons.logout_rounded,
+                            color: primary,
+                            size: 30,
+                          ),
+                        ]),
+                  ),
             const Spacer(flex: 2),
             SizedBox(
               height: 126,
@@ -90,11 +101,8 @@ class _UserProfileState extends State<UserProfile> {
                     children: [
                       ClipRRect(
                           borderRadius: BorderRadius.circular(126),
-                          child: Image.network(
-                              'http://10.0.2.2:3000/public/uploads/images/profile/scaled_image_picker887393490857838263.jpg',
-                              width: 126,
-                              height: 126,
-                              fit: BoxFit.cover)),
+                          child: Image.network(photoUrl,
+                              width: 126, height: 126, fit: BoxFit.cover)),
                       const Align(
                           alignment: Alignment.topRight,
                           child: Padding(
@@ -105,31 +113,41 @@ class _UserProfileState extends State<UserProfile> {
                   )),
             ),
             const Spacer(flex: 1),
-            Flexible(
-              flex: 8,
-              child: ListView.builder(
-                  itemCount: storeItems.length,
-                  itemBuilder: (context, index) {
-                    UserData item = storeItems.elementAt(index);
+            userDetails == null || photoUrl == null
+                ? const Center(
+                    child: Text('Loading...'),
+                  )
+                : Flexible(
+                    flex: 8,
+                    child: ListView.builder(
+                        itemCount: userDetails.length,
+                        itemBuilder: (context, index) {
+                          UserData item = userDetails.elementAt(index);
 
-                    return ListTile(
-                      title: Text(
-                        item.dataAttribute,
-                        style: Theme.of(context).textTheme.bodyText1.copyWith(
-                            color: isLightTheme(context)
-                                ? Colors.black
-                                : Colors.white),
-                      ),
-                      trailing: Text(
-                        item.value,
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            color: isLightTheme(context)
-                                ? Colors.black
-                                : Colors.white),
-                      ),
-                    );
-                  }),
-            ),
+                          return ListTile(
+                            title: Text(
+                              item.dataAttribute,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(
+                                      color: isLightTheme(context)
+                                          ? Colors.black
+                                          : Colors.white),
+                            ),
+                            trailing: Text(
+                              item.value,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                      color: isLightTheme(context)
+                                          ? Colors.black
+                                          : Colors.white),
+                            ),
+                          );
+                        }),
+                  ),
             Padding(
               padding: const EdgeInsets.all(16),
               child: ElevatedButton(
@@ -184,8 +202,21 @@ class _UserProfileState extends State<UserProfile> {
         context, MaterialPageRoute(builder: (context) => Intro()));
   }
 
-  _fetchUserData() {
-    Map userDetails = _localCacheService.fetch('USER');
-    print(userDetails.toString());
+  void _fetchUser() async {
+    _user = await CompositionRoot.fetchUser();
+
+    setState(() {
+      userDetails = [
+        UserData(dataAttribute: "Username", value: _user.username),
+        UserData(
+          dataAttribute: "Active Status",
+          value: _user.active ? "Active" : "Inactive",
+        ),
+        UserData(
+            dataAttribute: "Last Seen",
+            value: DateFormat.yMd().add_jm().format(_user.lastseen)),
+      ];
+      photoUrl = _user.photoUrl;
+    });
   }
 }
