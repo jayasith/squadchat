@@ -6,8 +6,10 @@ import 'package:squadchat/states/message/message_bloc.dart';
 import 'package:squadchat/states/typing/typing_notification_bloc.dart';
 import 'package:squadchat/theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:squadchat/views/screens/chat_home/chat_home.dart';
 import 'package:squadchat/views/screens/chat_home/home_router.dart';
 import 'package:squadchat/views/screens/chat_home/home_router_contract.dart';
+import 'package:squadchat/views/widgets/common/custom_confirmation_dialog.dart';
 
 import '../../../../colors.dart';
 import '../../../../models/chat.dart';
@@ -25,6 +27,9 @@ class Chats extends StatefulWidget {
 class _ChatsState extends State<Chats> {
   var chats = [];
   final typingEvents = [];
+  var deletePop = false;
+  var dataLoad = false;
+  var chatId;
 
   @override
   void initState() {
@@ -46,22 +51,39 @@ class _ChatsState extends State<Chats> {
   }
 
   _buildChatListView() {
-    return ListView.separated(
-        padding: const EdgeInsets.only(top: 10.0, right: 16.0),
-        itemBuilder: (_, index) => GestureDetector(
-              child: _chatRow(chats[index]),
-              onTap: () async {
-                await this.widget.homeRouter.onShowMessageThread(
-                    context, chats[index].from, widget.user,
-                    chatId: chats[index].id);
-              },
-            ),
-        separatorBuilder: (_, __) => Divider(
-              color: isLightTheme(context) ? Colors.white : Colors.black,
-              height: 0.0,
-              endIndent: 30.0,
-            ),
-        itemCount: chats.length);
+    return GestureDetector(
+      onTap: () {
+        chats.forEach((element) {
+          element.deleted = false;
+          print(element.deleted);
+        });
+      },
+      child: ListView.separated(
+          padding: const EdgeInsets.only(top: 10.0, right: 16.0),
+          itemBuilder: (_, index) => GestureDetector(
+                onLongPress: () {
+                  setState(() {
+                    chats[index].deleted = true;
+                  });
+                  chatId = chats[index].id;
+                },
+                child: _chatRow(chats[index]),
+                onTap: () async {
+                  setState(() {
+                    chats[index].deleted = false;
+                  });
+                  await this.widget.homeRouter.onShowMessageThread(
+                      context, chats[index].from, widget.user,
+                      chatId: chats[index].id);
+                },
+              ),
+          separatorBuilder: (_, __) => Divider(
+                color: isLightTheme(context) ? Colors.white : Colors.black,
+                height: 0.0,
+                endIndent: 30.0,
+              ),
+          itemCount: chats.length),
+    );
   }
 
   _chatRow(Chat chat) => ListTile(
@@ -101,44 +123,80 @@ class _ChatsState extends State<Chats> {
                   color:
                       isLightTheme(context) ? Colors.black54 : Colors.white70));
         }),
-        trailing: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Text(
-                DateFormat('h:mm: a').format(chat.mostRecent.message.timestamp),
-                style: Theme.of(context).textTheme.caption.copyWith(
-                    color:
-                        isLightTheme(context) ? Colors.black54 : Colors.white70,
-                    fontWeight:
-                        chat.unread > 0 ? FontWeight.bold : FontWeight.normal),
+        trailing: chat.deleted
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 4.0, bottom: 4.0),
+                    child: IconButton(
+                      onPressed: () {
+                        var alert = CustomConfirmationDialog(
+                          title: 'Delete Chat',
+                          content: 'Do you want to delete this chat?',
+                          okFunction: _delete_chat,
+                        );
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) => alert);
+                      },
+                      icon: Icon(
+                        Icons.delete,
+                        color: isLightTheme(context) ? primary : Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: Text(
+                      DateFormat('h:mm: a')
+                          .format(chat.mostRecent.message.timestamp),
+                      style: Theme.of(context).textTheme.caption.copyWith(
+                          color: isLightTheme(context)
+                              ? Colors.black54
+                              : Colors.white70,
+                          fontWeight: chat.unread > 0
+                              ? FontWeight.bold
+                              : FontWeight.normal),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(50.0),
+                      child: chat.unread > 0
+                          ? Container(
+                              height: 15.0,
+                              width: 15.0,
+                              color: primary,
+                              alignment: Alignment.center,
+                              child: Text(
+                                '2',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .caption
+                                    .copyWith(color: Colors.white),
+                              ),
+                            )
+                          : SizedBox.shrink(),
+                    ),
+                  )
+                ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 6.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(50.0),
-                child: chat.unread > 0
-                    ? Container(
-                        height: 15.0,
-                        width: 15.0,
-                        color: primary,
-                        alignment: Alignment.center,
-                        child: Text(
-                          '2',
-                          style: Theme.of(context)
-                              .textTheme
-                              .caption
-                              .copyWith(color: Colors.white),
-                        ),
-                      )
-                    : SizedBox.shrink(),
-              ),
-            )
-          ],
-        ),
       );
+
+  _delete_chat() async {
+    chats.removeWhere((element) => element.id == chatId);
+    final chatBloc = context.read<ChatBloc>();
+    await chatBloc.chatsViewModel.deleteChat(chatId);
+    Navigator.pop(context);
+  }
 
   _updateChatMessage() {
     final chatBloc = context.read<ChatBloc>();
