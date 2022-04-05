@@ -1,6 +1,7 @@
 import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:squadchat/models/chat.dart';
 import 'package:squadchat/states/home/home_bloc.dart';
 import 'package:squadchat/states/home/home_state.dart';
 import 'package:squadchat/views/screens/chat_home/home_router_contract.dart';
@@ -11,6 +12,7 @@ import '../../../widgets/chat_home/home_profile_image.dart';
 class Active extends StatefulWidget {
   final User user;
   final IHomeRouter homeRouter;
+
   Active(this.homeRouter, this.user);
 
   @override
@@ -44,8 +46,10 @@ class _ActiveState extends State<Active> {
       itemBuilder: (BuildContext context, index) => GestureDetector(
             child: _activeRow(users[index]),
             onTap: () => this.widget.homeRouter.onShowMessageThread(
-                context, users[index], widget.user,
-                chatId: users[index].id),
+                context,
+                [users[index]],
+                widget.user,
+                Chat(users[index].id, ChatType.individual)),
           ),
       separatorBuilder: (_, __) => Divider(
             color: isLightTheme(context) ? Colors.white : Colors.black,

@@ -21,7 +21,7 @@ abstract class BaseViewModel {
     return await _dataSource.findChat(chatId) != null;
   }
 
-  Future<void> _createNewChat(Chat chat) async {
+  Future<void> createNewChat(Chat chat) async {
     await _dataSource.addChat(chat);
   }
 }

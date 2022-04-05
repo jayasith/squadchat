@@ -10,7 +10,6 @@ import 'package:rethinkdb_dart/rethinkdb_dart.dart';
 class TypingEventService implements ITypingEventService {
   final Rethinkdb _rethinkdb;
   final Connection _connection;
-  final UserService _userService;
 
   final _controller = StreamController<TypingEvent>.broadcast();
   StreamSubscription _changefeed;
