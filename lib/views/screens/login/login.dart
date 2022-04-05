@@ -24,14 +24,14 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-      ),
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Expanded(
           child: ListView(
             children: [
+              const SizedBox(
+                height: 40,
+              ),
               _logo(context),
               const SizedBox(
                 height: 100,
