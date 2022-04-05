@@ -29,14 +29,17 @@ class _LoginState extends State<Login> {
       ),
       resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: Flexible(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+        child: Expanded(
+          child: ListView(
             children: [
               _logo(context),
-              const Spacer(),
-              const ProfileImageUpload(),
-              const Spacer(flex: 1),
+              const SizedBox(
+                height: 100,
+              ),
+              const Center(child: ProfileImageUpload()),
+              const SizedBox(
+                height: 150,
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                 child: CustomTextField(
@@ -98,7 +101,6 @@ class _LoginState extends State<Login> {
                           borderRadius: BorderRadius.circular(45))),
                 ),
               ),
-              const Spacer(flex: 1),
             ],
           ),
         ),
