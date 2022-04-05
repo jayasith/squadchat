@@ -1,6 +1,7 @@
 import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:squadchat/colors.dart';
 import 'package:squadchat/states/home/chat_bloc.dart';
 import 'package:squadchat/states/home/home_bloc.dart';
 import 'package:squadchat/states/home/home_state.dart';
@@ -13,6 +14,7 @@ import 'package:squadchat/views/widgets/common/header_status.dart';
 class Home extends StatefulWidget {
   final User user;
   final IHomeRouter router;
+
   const Home(this.user, this.router);
 
   @override
@@ -21,6 +23,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   User _user;
+
   @override
   void initState() {
     super.initState();
@@ -64,7 +67,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                     ))
                   ])),
           body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 6.0),
+            padding: const EdgeInsets.symmetric(horizontal: 6.0),
             child: TabBarView(
               children: [
                 Chats(_user, widget.router),
