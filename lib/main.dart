@@ -9,7 +9,8 @@ import 'package:squadchat/views/screens/user_profile/user_profile.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CompositionRoot.configure();
-  final firstPage = Intro();
+  final user = CompositionRoot().localCache.fetch('USER');
+  final firstPage = user.isEmpty ? Intro() : CompositionRoot.start();
   runApp(App(firstPage));
 }
 
