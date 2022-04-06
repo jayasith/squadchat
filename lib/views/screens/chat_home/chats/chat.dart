@@ -131,7 +131,7 @@ class _ChatsState extends State<Chats> {
                     padding: const EdgeInsets.only(
                         left: 8.0, right: 8.0, top: 4.0, bottom: 4.0),
                     child: IconButton(
-                      onPressed: () {
+                      onPressed: () async {
                         var alert = CustomConfirmationDialog(
                           title: 'Delete Chat',
                           content: 'Do you want to delete this chat?',
@@ -140,6 +140,7 @@ class _ChatsState extends State<Chats> {
                         showDialog(
                             context: context,
                             builder: (BuildContext context) => alert);
+                        context.read<ChatBloc>().chats();
                       },
                       icon: Icon(
                         Icons.delete,
@@ -195,6 +196,7 @@ class _ChatsState extends State<Chats> {
     chats.removeWhere((element) => element.id == chatId);
     final chatBloc = context.read<ChatBloc>();
     await chatBloc.chatsViewModel.deleteChat(chatId);
+    context.read<ChatBloc>().chats();
     Navigator.pop(context);
   }
 
