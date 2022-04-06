@@ -20,11 +20,13 @@ class DataSource implements IDataSource {
 
   @override
   Future<void> addMessage(LocalMessage message) async {
-    await _db.transaction((transaction) async {
-      await transaction.insert('messages', message.toMap(),
+    await _db.transaction((txn) async {
+      await txn.insert('messages', message.toMap(),
           conflictAlgorithm: ConflictAlgorithm.replace);
+      await txn.update(
+          'chats', {'updated_at': message.message.timestamp.toString()},
+          where: 'id = ?', whereArgs: [message.chatId]);
     });
-
   }
 
   @override
@@ -38,38 +40,29 @@ class DataSource implements IDataSource {
 
   @override
   Future<List<Chat>> findAllChats() {
-    return _db.transaction((transaction) async {
-      final chatsWithLatestMessage =
-          await transaction.rawQuery('''SELECT messages.* FROM
-      (SELECT chat_id, MAX(created_at) AS created_at
-        FROM messages
-        GROUP BY chat_id
-      ) AS latest_messages
-      INNER JOIN messages
-      ON messages.chat_id = latest_messages.chat_id
-      AND messages.created_at = latest_messages.created_at
-      ORDER BY messages.created_at DESC''');
+    return _db.transaction((txn) async {
+      final listOfChatMap = await txn.query('chats', orderBy: 'updated_at DESC');
 
-      if (chatsWithLatestMessage.isEmpty) return [];
+      if (listOfChatMap.isEmpty) return [];
 
-      final chatsWithUnreadMessages =
-          await transaction.rawQuery('''SELECT chat_id, count(*) as unread 
-      FROM messages
-      WHERE receipt = ?
-      GROUP BY chat_id
-      ''', ['delivered']);
+      return await Future.wait(listOfChatMap.map<Future<Chat>>((row) async {
+        final unread = Sqflite.firstIntValue(await txn.rawQuery(
+            'SELECT COUNT(*) FROM MESSAGES WHERE chat_id = ? AND receipt = ?',
+            [row['id'], 'delivered']));
 
-      return chatsWithLatestMessage.map<Chat>((row) {
-        final int unread = chatsWithUnreadMessages.firstWhere(
-            (element) => row['chat_id'] == element['chat_id'],
-            orElse: () => {'unread': 0})['unread'];
+        final mostRecentMessage = await txn.query('messages',
+            where: 'chat_id = ?',
+            whereArgs: [row['id']],
+            orderBy: 'created_at DESC',
+            limit: 1);
 
-
-        final chat = Chat.fromMap({'id':row['chat_id']});
+        final chat = Chat.fromMap(row);
         chat.unread = unread;
-        chat.mostRecent = LocalMessage.fromMap(row);
+        if (mostRecentMessage.isNotEmpty) {
+          chat.mostRecent = LocalMessage.fromMap(mostRecentMessage.first);
+        }
         return chat;
-      }).toList();
+      }));
     });
   }
 
@@ -95,7 +88,9 @@ class DataSource implements IDataSource {
           limit: 1);
       final chat = Chat.fromMap(listOfChatMaps.first);
       chat.unread = unread;
-      chat.mostRecent = LocalMessage.fromMap(mostRecentMessage.first);
+      if(mostRecentMessage.isNotEmpty) {
+        chat.mostRecent = LocalMessage.fromMap(mostRecentMessage.first);
+      }
       return chat;
     });
   }

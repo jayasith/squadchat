@@ -37,7 +37,7 @@ void main() {
     TypingEvent typingEvent =
         TypingEvent(from: user2.id, to: user1.id, event: Typing.start);
 
-    final res = await typingEventService.send(event: typingEvent);
+    final res = await typingEventService.send(event: [typingEvent]);
     expect(res, true);
   });
 
@@ -59,7 +59,7 @@ void main() {
       event: Typing.stop,
     );
 
-    await typingEventService.send(event: typing);
-    await typingEventService.send(event: stopTyping);
+    await typingEventService.send(event: [typing]);
+    await typingEventService.send(event: [stopTyping]);
   });
 }

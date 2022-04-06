@@ -17,22 +17,27 @@ class TypingEvent {
   final String from;
   final String to;
   final Typing event;
+  final String chatId;
 
-  TypingEvent({@required this.from, @required this.to, @required this.event});
+  TypingEvent(
+      {@required this.from,
+      @required this.to,
+      @required this.event,
+      @required this.chatId});
 
   String get id => _id;
 
-  Map<String, dynamic> toJson() => {
-        'from': from,
-        'to': to,
-        'event': event.value(),
-      };
+  Map<String, dynamic> toJson() =>
+      {'from': from, 'to': to, 'event': event.value(), 'chat_id': chatId};
 
   factory TypingEvent.fromJson(Map<String, dynamic> json) {
     var event = TypingEvent(
+      chatId: json['chat_id'],
       from: json['from'],
       to: json['to'],
-      event: TypingParser.fromString(json['event']),
+      event: TypingParser.fromString(
+        json['event'],
+      ),
     );
     event._id = json['id'];
     return event;

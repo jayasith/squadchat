@@ -6,6 +6,6 @@ abstract class IUserService {
   Future<void> disconnect(String userId);
   Future<void> reconnect(String userId);
   Future<void> deleteUser(String userId);
-  Future<User> fetch(String chatId);
   Future<User> fetchUser(String userId);
+  Future<List<User>> fetch(List<String> chatId);
 }
