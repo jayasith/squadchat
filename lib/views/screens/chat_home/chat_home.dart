@@ -1,6 +1,7 @@
 import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:squadchat/colors.dart';
 import 'package:squadchat/states/group/group_bloc.dart';
 import 'package:squadchat/states/home/chat_bloc.dart';
@@ -12,6 +13,9 @@ import 'package:squadchat/views/screens/chat_home/active/active.dart';
 import 'package:squadchat/views/screens/chat_home/chats/chat.dart';
 import 'package:squadchat/views/screens/chat_home/home_router_contract.dart';
 import 'package:squadchat/views/widgets/common/header_status.dart';
+
+import '../../../cache/local_cache_service.dart';
+import '../user_profile/user_profile.dart';
 
 class Home extends StatefulWidget {
   final User user;
@@ -42,7 +46,18 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-            title: HeaderStatus(_user.username, _user.photoUrl, _user.active),
+            title:InkWell(
+                onTap: () async {
+                  final sharedPreferences = await SharedPreferences.getInstance();
+                  var localCache = LocalCache(sharedPreferences);
+                  final currentUser = localCache.fetch('USER');
+                  if (widget.user.username == User.fromJson(currentUser).username) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const UserProfile()));
+                  }
+                },
+                child:  HeaderStatus(_user.username, _user.photoUrl, _user.active)
+            ),
             bottom: TabBar(
                 indicatorPadding: const EdgeInsets.symmetric(vertical: 10.0),
                 tabs: [
