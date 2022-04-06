@@ -207,7 +207,7 @@ class _ChatsState extends State<Chats> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 10.0),
-                    child: Text(
+                    child: chat.mostRecent != null ? Text(
                       DateFormat('h:mm: a')
                           .format(chat.mostRecent.message.timestamp),
                       style: Theme.of(context).textTheme.caption.copyWith(
@@ -217,7 +217,7 @@ class _ChatsState extends State<Chats> {
                           fontWeight: chat.unread > 0
                               ? FontWeight.bold
                               : FontWeight.normal),
-                    ),
+                    ):Text(' ') ,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 6.0),

@@ -38,24 +38,24 @@ class _GroupChatProfileState extends State<GroupChatProfile> {
             const Center(
               child: Icon(
                 Icons.group_rounded,
-                size: 100,
+                size: 75,
                 color: primary,
               ),
             ),
                Text(
                 '${widget.chat.name}',
-                style: Theme.of(context).textTheme.titleLarge.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 35,
+                style: Theme.of(context).textTheme.headlineLarge.copyWith(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 25,
                     color: isLightTheme(context) ? Colors.black : Colors.white),
               ),
             Padding(
               padding: const EdgeInsets.only(top: 30.0, right: 250.0),
               child: Text(
                 'Members',
-                style: Theme.of(context).textTheme.titleSmall.copyWith(
+                style: Theme.of(context).textTheme.headlineLarge.copyWith(
                     fontWeight: FontWeight.normal,
-                    fontSize: 22,
+                    fontSize: 20,
                     color: isLightTheme(context) ? Colors.black : Colors.white),
               ),
             ),
@@ -89,7 +89,13 @@ class _GroupChatProfileState extends State<GroupChatProfile> {
           imageUrl: user.photoUrl,
           userOnline: true,
         ),
-        title: Text(user.username),
+        title: Text(
+            user.username,
+            style: Theme.of(context).textTheme.caption.copyWith(
+                fontWeight: FontWeight.normal,
+                fontSize: 16,
+                color: isLightTheme(context) ? Colors.black : Colors.white)
+        ),
       );
 
 }
