@@ -15,10 +15,13 @@ class UserService implements IUserService {
 
     if (user.id != null) data['id'] = user.id;
 
-    final result = await rethinkdb.table('users').insert(
-        data, {'conflict': 'update', 'return_changes': true}).run(_connection);
-
-    return User.fromJson(result['changes'].first['new_val']);
+    try {
+      final result = await rethinkdb.table('users').insert(data,
+          {'conflict': 'update', 'return_changes': true}).run(_connection);
+      return User.fromJson(result['changes'].first['new_val']);
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -51,23 +54,30 @@ class UserService implements IUserService {
 
   @override
   Future<List<User>> online() async {
-    Cursor users = await rethinkdb
-        .table('users')
-        .filter({'active': true}).run(_connection);
-    final userList = await users.toList();
-
-    return userList.map((user) => User.fromJson(user)).toList();
+    try {
+      Cursor users = await rethinkdb
+          .table('users')
+          .filter({'active': true}).run(_connection);
+      final userList = await users.toList();
+      return userList.map((user) => User.fromJson(user)).toList();
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
   Future<void> deleteUser(String userId) async {
     print('removing user...');
-    await rethinkdb
-        .table('users')
-        .filter({'id': userId})
-        .delete()
-        .run(_connection);
-    _connection.close();
+    try {
+      await rethinkdb
+          .table('users')
+          .filter({'id': userId})
+          .delete()
+          .run(_connection);
+      _connection.close();
+    } catch (e) {
+      print(e);
+    }
   }
 
 @override
@@ -83,8 +93,11 @@ class UserService implements IUserService {
   
   @override
   Future<User> fetchUser(String userId) async {
-    final user = await rethinkdb.table('users').get(userId).run(_connection);
-
-    return User.fromJson(user);
+    try {
+      final user = await rethinkdb.table('users').get(userId).run(_connection);
+      return User.fromJson(user);
+    } catch (e) {
+      print(e);
+    }
   }
 }

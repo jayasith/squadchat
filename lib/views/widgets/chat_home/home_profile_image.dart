@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:squadchat/colors.dart';
 import 'package:squadchat/views/widgets/chat_home/user_online_indicator.dart';

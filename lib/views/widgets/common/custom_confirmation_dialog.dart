@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:squadchat/theme.dart';
 
 class CustomConfirmationDialog extends StatelessWidget {
   final String title;
@@ -12,8 +13,14 @@ class CustomConfirmationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(title),
-      content: Text(content),
+      title: Text(title,
+          style: TextStyle(
+              color: isLightTheme(context) ? Colors.black : Colors.white)),
+      content: Text(content,
+          style: TextStyle(
+              color: isLightTheme(context)
+                  ? Colors.black
+                  : Colors.white.withOpacity(0.5))),
       actions: [
         TextButton(
             onPressed: () {

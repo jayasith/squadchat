@@ -11,7 +11,7 @@ import 'package:squadchat/views/screens/login/login_router_contract.dart';
 
 class Login extends StatefulWidget {
   final ILoginRouter loginRouter;
-  // ignore: use_key_in_widget_constructors, prefer_const_constructors_in_immutables
+
   Login(this.loginRouter);
 
   @override
@@ -24,81 +24,85 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-      ),
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _logo(context),
-            const Spacer(),
-            const ProfileImageUpload(),
-            const Spacer(flex: 1),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-              child: CustomTextField(
-                hint: 'What is your name?',
-                height: 45,
-                onchanged: (val) {
-                  _name = val;
-                },
-                inputAction: TextInputAction.done,
+        child: Expanded(
+          child: ListView(
+            children: [
+              const SizedBox(
+                height: 40,
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: ElevatedButton(
-                onPressed: () async {
-                  final error = _validateInputs();
-
-                  if (error.isNotEmpty) {
-                    final snackBar = SnackBar(
-                        content: Text(
-                      error,
-                      style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.bold),
-                    ));
-
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    return;
-                  }
-
-                  await _connectSession();
-                },
-                child: BlocConsumer<LoginCubit, LoginState>(
-                    builder: (context, state) => state is Loading
-                        ? const Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Center(
-                                child: CircularProgressIndicator(
-                              color: Colors.white,
-                            )),
-                          )
-                        : Container(
-                            height: 45,
-                            alignment: Alignment.center,
-                            child: const Text(
-                              "Let's Connect",
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
-                            )),
-                    listener: (_, state) {
-                      if (state is LoginSuccess)
-                        // ignore: curly_braces_in_flow_control_structures
-                        widget.loginRouter
-                            .onSessionSuccess(context, state.user);
-                    }),
-                style: ElevatedButton.styleFrom(
-                    primary: primary,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(45))),
+              _logo(context),
+              const SizedBox(
+                height: 100,
               ),
-            ),
-            const Spacer(flex: 1),
-          ],
+              const Center(child: ProfileImageUpload()),
+              const SizedBox(
+                height: 150,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                child: CustomTextField(
+                  hint: 'What is your name?',
+                  height: 45,
+                  onchanged: (val) {
+                    _name = val;
+                  },
+                  inputAction: TextInputAction.done,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final error = _validateInputs();
+
+                    if (error.isNotEmpty) {
+                      final snackBar = SnackBar(
+                          content: Text(
+                        error,
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
+                      ));
+
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      return;
+                    }
+
+                    await _connectSession();
+                  },
+                  child: BlocConsumer<LoginCubit, LoginState>(
+                      builder: (context, state) => state is Loading
+                          ? const Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Center(
+                                  child: CircularProgressIndicator(
+                                color: Colors.white,
+                              )),
+                            )
+                          : Container(
+                              height: 45,
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "Let's Connect",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              )),
+                      listener: (_, state) {
+                        if (state is LoginSuccess)
+                          // ignore: curly_braces_in_flow_control_structures
+                          widget.loginRouter
+                              .onSessionSuccess(context, state.user);
+                      }),
+                  style: ElevatedButton.styleFrom(
+                      primary: primary,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(45))),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

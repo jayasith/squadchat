@@ -25,7 +25,11 @@ class _ActiveState extends State<Active> {
     return BlocBuilder<HomeBloc, HomeState>(builder: (_, state) {
       if (state is HomeLoading)
         return Center(child: CircularProgressIndicator());
-      if (state is HomeSuccess) return _buildActiveUserList(state.onlineUsers);
+      if (state is HomeSuccess) {
+        if (state.onlineUsers.isEmpty)
+          return Center(child: Text('No active users found'));
+        return _buildActiveUserList(state.onlineUsers);
+      }
     });
   }
 

@@ -51,6 +51,8 @@ class CompositionRoot {
   static GroupService _groupService;
   static ChatsViewModel _viewModel;
 
+  LocalCache get localCache => _localCache;
+
   static configure() async {
     _rethinkdb = Rethinkdb();
     _connection = await _rethinkdb.connect(host: UrlConfig().host, port: 28015);
@@ -113,6 +115,23 @@ class CompositionRoot {
       BlocProvider(create: (BuildContext context) => _chatsBloc),
       BlocProvider(create: (BuildContext context) => _groupBloc),
     ], child: Home(_viewModel, _homeRouter, user));
+  }
+
+  static Widget composeMessageThreadUi(User receiver, User user,
+      {String chatId}) {
+    ChatViewModel viewModel = ChatViewModel(_iDataSource);
+    MessageThreadCubit messageThreadCubit = MessageThreadCubit(viewModel);
+    IReceiptService receiptService = ReceiptService(_rethinkdb, _connection);
+    ReceiptBloc receiptBloc = ReceiptBloc(receiptService);
+
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (BuildContext context) => messageThreadCubit),
+          BlocProvider(create: (BuildContext context) => receiptBloc)
+        ],
+        child: MessageThread(
+            receiver, user, _messageBloc, _chatsBloc, _typingNotificationBloc,
+            chatId: chatId));
   }
 
   static void deleteUser() async {
