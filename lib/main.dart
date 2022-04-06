@@ -3,6 +3,13 @@ import 'package:squadchat/composition_root.dart';
 import 'package:squadchat/theme.dart';
 import 'package:squadchat/views/screens/intro/intro.dart';
 
+import 'package:squadchat/views/screens/login/login.dart';
+import 'package:squadchat/views/screens/status/status.dart';
+
+import 'package:squadchat/views/screens/user_profile/user_profile.dart';
+import 'package:squadchat/views/widgets/status/status_image_upload.dart';
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CompositionRoot.configure();
@@ -59,7 +66,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         title: 'Squadchat',
         theme: lightTheme(context),
         darkTheme: darkTheme(context),
-        home: widget.firstPage);
+        home: StatusScreen());
   }
 
   static bool fetchLocalUser() {
