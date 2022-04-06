@@ -19,17 +19,7 @@ class HeaderStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () async {
-        final sharedPreferences = await SharedPreferences.getInstance();
-        localCache = LocalCache(sharedPreferences);
-        final currentUser = localCache.fetch('USER');
-        if (username == User.fromJson(currentUser).username) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const UserProfile()));
-        }
-      },
-      child: Container(
+    return Container(
           width: double.maxFinite,
           child: Row(children: [
             HomeProfileImage(
@@ -62,7 +52,7 @@ class HeaderStatus extends StatelessWidget {
                 )
               ],
             )
-          ])),
+          ])
     );
   }
 }

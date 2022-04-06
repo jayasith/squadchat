@@ -13,6 +13,7 @@ import 'package:squadchat/states/message_thread/message_thread_cubit.dart';
 import 'package:squadchat/states/receipt/receipt_bloc.dart';
 import 'package:squadchat/states/typing/typing_notification_bloc.dart';
 import 'package:squadchat/theme.dart';
+import 'package:squadchat/views/screens/chat_home/chats/group/group_chat_profile.dart';
 import 'package:squadchat/views/widgets/common/header_status.dart';
 import 'package:squadchat/views/widgets/message_thread/receiver_message.dart';
 import 'package:squadchat/views/widgets/message_thread/sender_message.dart';
@@ -41,10 +42,14 @@ class _MessageThreadState extends State<MessageThread> {
   List<LocalMessage> messages = [];
   Timer _startTypingTimer;
   Timer _stopTypingTimer;
+  Chat chat;
+  List<User> members;
 
   @override
   void initState() {
     super.initState();
+    members = widget.receivers;
+    chat = widget.chat;
     chatId = widget.chat.id;
     receivers = widget.receivers;
     receivers.removeWhere((element) => element.id == widget.user.id);
@@ -88,24 +93,35 @@ class _MessageThreadState extends State<MessageThread> {
                   }
                 }
 
-                return HeaderStatus(
-                  widget.chat.name ?? receivers.first.username,
-                  widget.chat.type == ChatType.individual
-                      ? receivers.first.photoUrl
-                      : null,
-                  widget.chat.type == ChatType.individual
-                      ? receivers.first.active
-                      : false,
-                  description: widget.chat.type == ChatType.individual
-                      ? 'last seen ${DateFormat.yMd().add_jm().format(receivers.first.lastseen)}'
-                      : receivers
-                          .fold<String>(
-                              '',
-                              (previousValue, element) =>
-                                  previousValue + ', ' + element.username)
-                          .replaceFirst(',', '')
-                          .trim(),
-                  typing: typing,
+                return InkWell(
+                  onTap: () async {
+                    if (widget.chat.type == ChatType.group) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  GroupChatProfile(chat, receivers)));
+                    }
+                  },
+                  child: HeaderStatus(
+                    widget.chat.name ?? receivers.first.username,
+                    widget.chat.type == ChatType.individual
+                        ? receivers.first.photoUrl
+                        : null,
+                    widget.chat.type == ChatType.individual
+                        ? receivers.first.active
+                        : false,
+                    description: widget.chat.type == ChatType.individual
+                        ? 'last seen ${DateFormat.yMd().add_jm().format(receivers.first.lastseen)}'
+                        : receivers
+                            .fold<String>(
+                                '',
+                                (previousValue, element) =>
+                                    previousValue + ', ' + element.username)
+                            .replaceFirst(',', '')
+                            .trim(),
+                    typing: typing,
+                  ),
                 );
               },
             ))
