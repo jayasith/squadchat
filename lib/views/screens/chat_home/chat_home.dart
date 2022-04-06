@@ -1,19 +1,21 @@
 import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:squadchat/colors.dart';
 import 'package:squadchat/states/home/chat_bloc.dart';
 import 'package:squadchat/states/home/home_bloc.dart';
 import 'package:squadchat/states/home/home_state.dart';
 import 'package:squadchat/states/message/message_bloc.dart';
 import 'package:squadchat/views/screens/chat_home/active/active.dart';
 import 'package:squadchat/views/screens/chat_home/chats/chat.dart';
-import 'package:squadchat/views/screens/user_profile/user_profile.dart';
-import 'package:squadchat/views/widgets/chat_home/home_profile_image.dart';
+import 'package:squadchat/views/screens/chat_home/home_router_contract.dart';
+import 'package:squadchat/views/widgets/common/header_status.dart';
 
 class Home extends StatefulWidget {
   final User user;
+  final IHomeRouter router;
 
-  const Home(this.user);
+  const Home(this.user, this.router);
 
   @override
   State<Home> createState() => _HomeState();
@@ -21,6 +23,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   User _user;
+
   @override
   void initState() {
     super.initState();
@@ -35,40 +38,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
       length: 2,
       child: Scaffold(
           appBar: AppBar(
-              title: InkWell(
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const UserProfile())),
-                child: Container(
-                    width: double.maxFinite,
-                    child: Row(children: [
-                      HomeProfileImage(
-                        imageUrl: _user.photoUrl,
-                        userOnline: true,
-                      ),
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(_user.username,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption
-                                    .copyWith(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text('online',
-                                style: Theme.of(context).textTheme.caption),
-                          )
-                        ],
-                      )
-                    ])),
-              ),
+              title: HeaderStatus(_user.username, _user.photoUrl, _user.active),
               bottom: TabBar(
                   indicatorPadding: const EdgeInsets.symmetric(vertical: 10.0),
                   tabs: [
@@ -97,9 +67,12 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                     ))
                   ])),
           body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 6.0),
+            padding: const EdgeInsets.symmetric(horizontal: 6.0),
             child: TabBarView(
-              children: [Chats(_user), Active()],
+              children: [
+                Chats(_user, widget.router),
+                Active(widget.router, _user)
+              ],
             ),
           )),
     );
