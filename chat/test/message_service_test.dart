@@ -17,8 +17,7 @@ void main() {
     final EncryptionService encryption =
         EncryptionService(Encrypter(AES(Key.fromLength(32))));
     await createDb(rethinkdb, connection);
-    messageService =
-        MessageService(rethinkdb, connection, encryptionService: encryption);
+    messageService = MessageService(rethinkdb, connection);
   });
 
   tearDown(() async {
@@ -49,7 +48,7 @@ void main() {
       contents: 'test message',
     );
 
-    final Message isSent = await messageService.send(message);
+    final Message isSent = await messageService.send([message]);
     expect(isSent, true);
   }));
 
@@ -76,8 +75,8 @@ void main() {
       contents: contents,
     );
 
-    await messageService.send(message1);
-    await messageService.send(message2);
+    await messageService.send([message1]);
+    await messageService.send([message2]);
   });
 
   test('subscribe and receive new messages successfully', () async {
@@ -95,13 +94,13 @@ void main() {
       contents: 'another test message',
     );
 
-    await messageService.send(message1);
-    await messageService.send(message2).whenComplete(
-          () => messageService.messages(activeUser: user2).listen(
-                expectAsync1((message) {
-                  expect(message.to, user2.id);
-                }, count: 2),
-              ),
-        );
+    await messageService.send([message1]);
+    await messageService.send([message2]).whenComplete(
+      () => messageService.messages(activeUser: user2).listen(
+            expectAsync1((message) {
+              expect(message.to, user2.id);
+            }, count: 2),
+          ),
+    );
   });
 }

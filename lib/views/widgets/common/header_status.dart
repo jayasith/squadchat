@@ -10,12 +10,12 @@ class HeaderStatus extends StatelessWidget {
   final String username;
   final String imageUrl;
   final bool active;
-  final DateTime lastseen;
-  final bool typing;
   static LocalCache localCache;
+  final String description;
+  final String typing;
 
   const HeaderStatus(this.username, this.imageUrl, this.active,
-      {this.lastseen, this.typing});
+      {this.description, this.typing});
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +51,10 @@ class HeaderStatus extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 8.0),
                   child: typing == null
                       ? Text(
-                          active
-                              ? 'online'
-                              : 'lastseen ${DateFormat.yMd().add_jm().format(lastseen)}',
+                          active ? 'online' : description,
                           style: Theme.of(context).textTheme.caption,
                         )
-                      : Text('typing...',
+                      : Text(typing,
                           style: Theme.of(context)
                               .textTheme
                               .caption

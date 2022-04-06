@@ -8,7 +8,9 @@ import 'package:squadchat/cache/local_cache_contract.dart';
 import 'package:squadchat/cache/local_cache_service.dart';
 import 'package:squadchat/config/url_config.dart';
 import 'package:squadchat/data/services/image_uploader_service.dart';
+import 'package:squadchat/states/group/group_bloc.dart';
 import 'package:squadchat/states/home/chat_bloc.dart';
+import 'package:squadchat/states/home/group_chat_bloc.dart';
 import 'package:squadchat/states/home/home_bloc.dart';
 import 'package:squadchat/states/login/login_cubit.dart';
 import 'package:squadchat/states/login/profile_image_cubit.dart';
@@ -25,10 +27,12 @@ import 'package:squadchat/views/screens/login/login.dart';
 import 'package:squadchat/views/screens/login/login_router.dart';
 import 'package:squadchat/views/screens/login/login_router_contract.dart';
 import 'package:squadchat/views/screens/message_thread/message_thread.dart';
+import 'package:squadchat/views/widgets/chat_home/create_chat_group.dart';
 
 import 'data/data_sources/data_source.dart';
 import 'data/data_sources/data_source_contract.dart';
 import 'data/factories/db_factory.dart';
+import 'models/chat.dart';
 
 class CompositionRoot {
   static Rethinkdb _rethinkdb;
@@ -42,6 +46,10 @@ class CompositionRoot {
   static TypingNotificationBloc _typingNotificationBloc;
   static TypingEventService _typingEventService;
   static ChatBloc _chatsBloc;
+  static IHomeRouter _homeRouter;
+  static GroupBloc _groupBloc;
+  static GroupService _groupService;
+  static ChatsViewModel _viewModel;
 
   LocalCache get localCache => _localCache;
 
@@ -61,8 +69,15 @@ class CompositionRoot {
     _localCache = LocalCache(sharedPreferences);
     _messageBloc = MessageBloc(_messageService);
     _typingNotificationBloc = TypingNotificationBloc(_typingEventService);
-    final viewModel = ChatsViewModel(_iDataSource, _userService);
-    _chatsBloc = ChatBloc(viewModel);
+     _viewModel = ChatsViewModel(_iDataSource, _userService);
+    _chatsBloc = ChatBloc(_viewModel);
+
+    _groupService = GroupMessageService(_rethinkdb, _connection);
+    _groupBloc = GroupBloc(_groupService);
+
+    _homeRouter = HomeRouter(
+        showMessageThread: composeMessageThreadUi,
+        showGroupCreation: composeGroupUi);
   }
 
   static Widget start() {
@@ -92,13 +107,14 @@ class CompositionRoot {
 
   static Widget composeChatHomeUi(User user) {
     HomeBloc homeBloc = HomeBloc(_userService, _localCache);
-    IHomeRouter router = HomeRouter(showMessageThread: composeMessageThreadUi);
+
     return MultiBlocProvider(providers: [
       BlocProvider(create: (BuildContext context) => homeBloc),
       BlocProvider(create: (BuildContext context) => _messageBloc),
       BlocProvider(create: (BuildContext context) => _typingNotificationBloc),
-      BlocProvider(create: (BuildContext context) => _chatsBloc)
-    ], child: Home(user, router));
+      BlocProvider(create: (BuildContext context) => _chatsBloc),
+      BlocProvider(create: (BuildContext context) => _groupBloc),
+    ], child: Home(_viewModel, _homeRouter, user));
   }
 
   static Widget composeMessageThreadUi(User receiver, User user,
@@ -137,5 +153,32 @@ class CompositionRoot {
   static void reconnectUser() async {
     final user = _localCache.fetch('USER');
     await _userService.reconnect(user['id'].toString());
+  }
+
+  static Widget composeMessageThreadUi(
+      List<User> receivers, User user, Chat chat) {
+    ChatViewModel viewModel = ChatViewModel(_iDataSource);
+    MessageThreadCubit messageThreadCubit = MessageThreadCubit(viewModel);
+    IReceiptService receiptService = ReceiptService(_rethinkdb, _connection);
+    ReceiptBloc receiptBloc = ReceiptBloc(receiptService);
+
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (BuildContext context) => messageThreadCubit),
+          BlocProvider(create: (BuildContext context) => receiptBloc)
+        ],
+        child: MessageThread(receivers, user, _messageBloc, _chatsBloc,
+            _typingNotificationBloc, chat));
+  }
+
+  static Widget composeGroupUi(List<User> actives, User user ){
+    GroupChatBloc groupChatBloc = GroupChatBloc();
+    GroupBloc groupBloc = GroupBloc(_groupService);
+
+    return MultiBlocProvider(providers: [
+      BlocProvider(create: (BuildContext context) => groupChatBloc),
+      BlocProvider(create: (BuildContext context) => groupBloc),
+    ], child: CreateChatGroup(actives,user,_chatsBloc,_homeRouter));
+
   }
 }
