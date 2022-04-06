@@ -4,6 +4,10 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>PhotoLibraryAccessWarning</string>
+	<key>NSCameraUsageDescription</key>
+	<string>CameraLibraryAccessWarning</string>
 	<key>CFBundleDisplayName</key>
 	<string>Squadchat</string>
 	<key>CFBundleExecutable</key>
