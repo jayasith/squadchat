@@ -81,8 +81,8 @@ class _ChatsState extends State<Chats> {
                     chats[index].deleted = false;
                   });
                   await this.widget.homeRouter.onShowMessageThread(
-                      context, chats[index].from, widget.user,
-                      chatId: chats[index].id);
+                      context, chats[index].members, widget.user,
+                      chats[index]);
                 },
               ),
           separatorBuilder: (_, __) => Divider(
@@ -174,6 +174,7 @@ class _ChatsState extends State<Chats> {
                   color:
                       isLightTheme(context) ? Colors.black54 : Colors.white70));
         }),
+
         trailing: chat.deleted
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.end,

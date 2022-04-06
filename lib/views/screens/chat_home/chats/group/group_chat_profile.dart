@@ -63,43 +63,11 @@ class _GroupChatProfileState extends State<GroupChatProfile> {
               height: 400,
               child:  _buildMemberListView(),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: ElevatedButton(
-                onPressed: () {
-                  var alert = CustomConfirmationDialog(
-                    title: 'Delete Group Chat',
-                    content: 'Do you want to delete this group chat ?',
-                    okFunction: _confirmationOk,
-                  );
-
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) => alert);
-                },
-                child: const Icon(Icons.delete_forever),
-                style: ElevatedButton.styleFrom(
-                    primary: primary,
-                    fixedSize: const Size(60, 60),
-                    shape: const CircleBorder(),
-                    elevation: 0),
-              ),
-            ),
              // _deleteGroup(),
           ],
         ),
       ),
     );
-  }
-
-  _confirmationOk() async {
-    await iDataSource.deleteChat(widget.chat.id);
-    final sharedPreferences = await SharedPreferences.getInstance();
-    localCache = LocalCache(sharedPreferences);
-    final currentUser = localCache.fetch('USER');
-    User user = User.fromJson(currentUser);
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => CompositionRoot.composeChatHomeUi(user)));
   }
 
   _buildMemberListView() {
@@ -124,7 +92,4 @@ class _GroupChatProfileState extends State<GroupChatProfile> {
         title: Text(user.username),
       );
 
-  _deleteGroup(){
-
-  }
 }
