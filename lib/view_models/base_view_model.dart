@@ -24,4 +24,8 @@ abstract class BaseViewModel {
   Future<void> createNewChat(Chat chat) async {
     await _dataSource.addChat(chat);
   }
+
+  Future<void> deleteChat(String chatId) async {
+    await _dataSource.deleteChat(chatId);
+  }
 }

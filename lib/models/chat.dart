@@ -20,6 +20,8 @@ class Chat {
   int unread = 0;
   List<LocalMessage> messages = [];
   LocalMessage mostRecent;
+  User from;
+  bool deleted = false;
   List<User> members;
   List<Map> membersId;
   ChatType type;
