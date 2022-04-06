@@ -1,25 +1,30 @@
 import 'package:flutter/foundation.dart';
 
 class UserStatus{
+  final String userId;
   String name;
   String statusUrl;
-  String _id;
   DateTime time;
+  String _id;
+ 
 
   UserStatus(
-    {@required String name,
-    @required String statusUrl,
-    @required DateTime time
+  { @required this.userId,
+    @required this.name,
+    @required this.statusUrl,
+    @required this.time 
   });
   String get id => _id;
 
 toJson() => {
+  'user_id':userId,
   'name' : name,
   'statusUrl' : statusUrl,
   'time' : time
 };
 factory UserStatus.fromJson(Map<String, dynamic> json){
   final userStatus = UserStatus(
+    userId: json['userid'],
     name: json['name'],
     statusUrl: json['statusUrl'],
     time: json['time']);
