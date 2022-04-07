@@ -7,8 +7,8 @@ import 'package:squadchat/views/screens/splash/Splash.dart';
 import 'package:squadchat/views/screens/login/login.dart';
 import 'package:squadchat/views/screens/status/status.dart';
 
+
 import 'package:squadchat/views/screens/user_profile/user_profile.dart';
-import 'package:squadchat/views/widgets/status/status_image_upload.dart';
 
 
 void main() async {
@@ -67,7 +67,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         title: 'Squadchat',
         theme: lightTheme(context),
         darkTheme: darkTheme(context),
-        home: StatusScreen());
+        home: widget.firstPage);
   }
 
   static bool fetchLocalUser() {
