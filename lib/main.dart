@@ -6,8 +6,8 @@ import 'package:squadchat/views/screens/intro/intro.dart';
 import 'package:squadchat/views/screens/login/login.dart';
 import 'package:squadchat/views/screens/status/status.dart';
 
+
 import 'package:squadchat/views/screens/user_profile/user_profile.dart';
-import 'package:squadchat/views/widgets/status/status_image_upload.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,6 +60,6 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         title: 'Squadchat',
         theme: lightTheme(context),
         darkTheme: darkTheme(context),
-        home: StatusScreen());
+        home: widget.firstPage);
   }
 }
