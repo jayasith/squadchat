@@ -13,13 +13,19 @@ import 'package:squadchat/states/home/home_bloc.dart';
 import 'package:squadchat/states/login/login_cubit.dart';
 import 'package:squadchat/states/login/profile_image_cubit.dart';
 import 'package:squadchat/states/message/message_bloc.dart';
+import 'package:squadchat/states/message_thread/message_thread_cubit.dart';
+import 'package:squadchat/states/receipt/receipt_bloc.dart';
 import 'package:squadchat/states/typing/typing_notification_bloc.dart';
+import 'package:squadchat/view_models/chat_view_model.dart';
 import 'package:squadchat/view_models/chats_view_model.dart';
 import 'package:squadchat/views/screens/chat_home/chat_home.dart';
-import 'package:squadchat/views/screens/intro/intro.dart';
+import 'package:squadchat/views/screens/chat_home/home_router.dart';
+import 'package:squadchat/views/screens/chat_home/home_router_contract.dart';
 import 'package:squadchat/views/screens/login/login.dart';
 import 'package:squadchat/views/screens/login/login_router.dart';
 import 'package:squadchat/views/screens/login/login_router_contract.dart';
+import 'package:squadchat/views/screens/message_thread/message_thread.dart';
+
 import 'data/data_sources/data_source.dart';
 import 'data/data_sources/data_source_contract.dart';
 import 'data/factories/db_factory.dart';
@@ -35,6 +41,9 @@ class CompositionRoot {
   static MessageBloc _messageBloc;
   static TypingNotificationBloc _typingNotificationBloc;
   static TypingEventService _typingEventService;
+  static ChatBloc _chatsBloc;
+
+  LocalCache get localCache => _localCache;
 
   static configure() async {
     _rethinkdb = Rethinkdb();
@@ -52,6 +61,8 @@ class CompositionRoot {
     _localCache = LocalCache(sharedPreferences);
     _messageBloc = MessageBloc(_messageService);
     _typingNotificationBloc = TypingNotificationBloc(_typingEventService);
+    final viewModel = ChatsViewModel(_iDataSource, _userService);
+    _chatsBloc = ChatBloc(viewModel);
   }
 
   static Widget start() {
@@ -81,26 +92,50 @@ class CompositionRoot {
 
   static Widget composeChatHomeUi(User user) {
     HomeBloc homeBloc = HomeBloc(_userService, _localCache);
-    ChatsViewModel chatsViewModel = ChatsViewModel(_iDataSource, _userService);
-    ChatBloc chatBloc = ChatBloc(chatsViewModel);
-
+    IHomeRouter router = HomeRouter(showMessageThread: composeMessageThreadUi);
     return MultiBlocProvider(providers: [
       BlocProvider(create: (BuildContext context) => homeBloc),
       BlocProvider(create: (BuildContext context) => _messageBloc),
       BlocProvider(create: (BuildContext context) => _typingNotificationBloc),
-      BlocProvider(create: (BuildContext context) => chatBloc)
-    ], child: Home(user));
+      BlocProvider(create: (BuildContext context) => _chatsBloc)
+    ], child: Home(user, router));
+  }
+
+  static Widget composeMessageThreadUi(User receiver, User user,
+      {String chatId}) {
+    ChatViewModel viewModel = ChatViewModel(_iDataSource);
+    MessageThreadCubit messageThreadCubit = MessageThreadCubit(viewModel);
+    IReceiptService receiptService = ReceiptService(_rethinkdb, _connection);
+    ReceiptBloc receiptBloc = ReceiptBloc(receiptService);
+
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (BuildContext context) => messageThreadCubit),
+          BlocProvider(create: (BuildContext context) => receiptBloc)
+        ],
+        child: MessageThread(
+            receiver, user, _messageBloc, _chatsBloc, _typingNotificationBloc,
+            chatId: chatId));
   }
 
   static void deleteUser() async {
-    await _userService.deleteUser('0805cb2e-bc64-4d1a-97ec-3b1110f23e34');
+    final user = _localCache.fetch('USER');
+    await _userService.deleteUser(user['id'].toString());
+    await _localCache.remove();
+  }
+
+  static Future<User> fetchUser() async {
+    final user = _localCache.fetch('USER');
+    return await _userService.fetchUser(user['id'].toString());
   }
 
   static void disconnectUser() async {
-    await _userService.disconnect('9ab25a84-fe1a-4506-ac52-f73eb6d09505');
+    final user = _localCache.fetch('USER');
+    await _userService.disconnect(user['id'].toString());
   }
 
   static void reconnectUser() async {
-    await _userService.reconnect('9ab25a84-fe1a-4506-ac52-f73eb6d09505');
+    final user = _localCache.fetch('USER');
+    await _userService.reconnect(user['id'].toString());
   }
 }

@@ -7,6 +7,7 @@ class Chat {
   List<LocalMessage> messages = [];
   LocalMessage mostRecent;
   User from;
+  bool deleted = false;
 
   Chat(this.id, {this.messages, this.mostRecent});
 
