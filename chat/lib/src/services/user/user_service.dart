@@ -21,6 +21,7 @@ class UserService implements IUserService {
       return User.fromJson(result['changes'].first['new_val']);
     } catch (e) {
       print(e);
+      return null;
     }
   }
 
@@ -62,6 +63,7 @@ class UserService implements IUserService {
       return userList.map((user) => User.fromJson(user)).toList();
     } catch (e) {
       print(e);
+      return null;
     }
   }
 
@@ -87,6 +89,7 @@ class UserService implements IUserService {
       return User.fromJson(user);
     } catch (e) {
       print(e);
+      return null;
     }
   }
 
@@ -97,6 +100,7 @@ class UserService implements IUserService {
       return User.fromJson(user);
     } catch (e) {
       print(e);
+      return null;
     }
   }
 }
