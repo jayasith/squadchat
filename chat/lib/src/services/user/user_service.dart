@@ -76,7 +76,6 @@ class UserService implements IUserService {
           .filter({'id': userId})
           .delete()
           .run(_connection);
-      _connection.close();
     } catch (e) {
       print(e);
     }
