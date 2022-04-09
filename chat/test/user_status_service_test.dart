@@ -21,20 +21,19 @@ void main(){
   });
   final user = User.fromJson({
       'id': '1234' ,
-      'active': true,
+    'username':'test1',
       'lastseen': DateTime.now(),
   });
 
   final user2 = User.fromJson({
       'id': '124' ,
-      'active': true,
+      'username':'test2',
       'lastseen': DateTime.now(),
   });
 
  test('Send a new Status Successfully', (() async {
     final userStatus = UserStatus(
-      userId: '1234',
-      name: 'test',
+      username: 'test2',
       statusUrl: 'url',
       time: DateTime.now(),
     );
