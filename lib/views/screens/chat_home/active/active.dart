@@ -22,13 +22,16 @@ class _ActiveState extends State<Active> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(builder: (_, state) {
-      if (state is HomeLoading)
-        return Center(child: CircularProgressIndicator());
+      if (state is HomeLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
       if (state is HomeSuccess) {
-        if (state.onlineUsers.isEmpty)
-          return Center(child: Text('No active users found'));
+        if (state.onlineUsers.isEmpty) {
+          return const Center(child: Text('No active users found'));
+        }
         return _buildActiveUserList(state.onlineUsers);
       }
+      return null;
     });
   }
 
