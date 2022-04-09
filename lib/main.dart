@@ -44,8 +44,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.detached) return;
 
-    final isNotActive = state == AppLifecycleState.paused ||
-        state == AppLifecycleState.detached;
+    final isNotActive = state == AppLifecycleState.paused;
     final isResumed = state == AppLifecycleState.resumed;
 
     if (isNotActive) CompositionRoot.disconnectUser();
