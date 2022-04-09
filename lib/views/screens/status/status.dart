@@ -30,7 +30,9 @@ class _StatusState extends State<StatusScreen> {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
     setState(() {
-      _imageFile = File(pickedFile.path);
+      _imageFile = File(_filePath);
+      _filePath = pickedFile.path;
+      print(_filePath);
     });
   }
 
@@ -80,11 +82,12 @@ class _StatusState extends State<StatusScreen> {
                       backgroundColor: Colors.black,
                       radius: 40.0,
                       child: CircleAvatar(
-                        radius: 70.0,
+                        radius: 30.0,
                         child: ClipOval(
                           child: (_imageFile != null)
                               ? Image.file(_imageFile)
                               : Image.asset('/assets/images/logo.png'),
+                          // clipper: MyClip(),
                         ),
                         backgroundColor: Colors.white,
                       ),
@@ -140,6 +143,7 @@ class _StatusState extends State<StatusScreen> {
   }
 }
 
+
 class HeadStatus extends StatelessWidget {
   const HeadStatus({Key key}) : super(key: key);
 
@@ -148,3 +152,13 @@ class HeadStatus extends StatelessWidget {
     return Container();
   }
 }
+
+// class MyClip extends CustomClipper<Rect> {
+//   Rect getClip(Size size) {
+//     return const Rect.fromLTWH(0, 0, 100, 100);
+//   }
+//
+//   bool shouldReclip(oldClipper) {
+//     return false;
+//   }
+// }

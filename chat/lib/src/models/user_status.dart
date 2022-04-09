@@ -24,7 +24,7 @@ toJson() => {
 };
 factory UserStatus.fromJson(Map<String, dynamic> json){
   final userStatus = UserStatus(
-    userId: json['userid'],
+    userId: json['userId'],
     name: json['name'],
     statusUrl: json['statusUrl'],
     time: json['time']);
