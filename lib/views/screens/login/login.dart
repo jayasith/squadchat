@@ -92,10 +92,10 @@ class _LoginState extends State<Login> {
                                     ),
                                   )),
                           listener: (_, state) {
-                            if (state is LoginSuccess)
-                              // ignore: curly_braces_in_flow_control_structures
+                            if (state is LoginSuccess) {
                               widget.loginRouter
                                   .onSessionSuccess(context, state.user);
+                            }
                           }),
                       style: ElevatedButton.styleFrom(
                           primary: primary,
