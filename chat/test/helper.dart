@@ -15,6 +15,10 @@ Future<void> createDb(Rethinkdb rethinkdb, Connection connection) async {
       .tableCreate('typing_events')
       .run(connection)
       .catchError((err) => {});
+      await rethinkdb
+      .tableCreate('userStatus')
+      .run(connection)
+      .catchError((err) => {});
 }
 
 Future<void> cleanDb(Rethinkdb rethinkdb, Connection connection) async {
@@ -22,4 +26,6 @@ Future<void> cleanDb(Rethinkdb rethinkdb, Connection connection) async {
   await rethinkdb.table('messages').delete().run(connection);
   await rethinkdb.table('receipts').delete().run(connection);
   await rethinkdb.table('typing_events').delete().run(connection);
+  await rethinkdb.table('userStatus').delete().run(connection);
+
 }

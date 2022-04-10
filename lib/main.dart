@@ -2,12 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:squadchat/composition_root.dart';
 import 'package:squadchat/theme.dart';
 import 'package:squadchat/views/screens/intro/intro.dart';
+import 'package:squadchat/views/screens/splash/Splash.dart';
+
+import 'package:squadchat/views/screens/login/login.dart';
+import 'package:squadchat/views/screens/status/status.dart';
+
+
+import 'package:squadchat/views/screens/user_profile/user_profile.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CompositionRoot.configure();
   final firstPage =
-      _AppState.fetchLocalUser() ? CompositionRoot.start() : Intro();
+      _AppState.fetchLocalUser() ? CompositionRoot.start() : Splash();
   runApp(App(firstPage));
 }
 
