@@ -21,6 +21,7 @@ class UserService implements IUserService {
       return User.fromJson(result['changes'].first['new_val']);
     } catch (e) {
       print(e);
+      return null;
     }
   }
 
@@ -62,6 +63,7 @@ class UserService implements IUserService {
       return userList.map((user) => User.fromJson(user)).toList();
     } catch (e) {
       print(e);
+      return null;
     }
   }
 
@@ -74,13 +76,12 @@ class UserService implements IUserService {
           .filter({'id': userId})
           .delete()
           .run(_connection);
-      _connection.close();
     } catch (e) {
       print(e);
     }
   }
 
-@override
+  @override
   Future<List<User>> fetch(List<String> chatId) async {
     Cursor users = await rethinkdb
         .table('users')
@@ -90,7 +91,7 @@ class UserService implements IUserService {
     List userList = await users.toList();
     return userList.map((user) => User.fromJson(user)).toList();
   }
-  
+
   @override
   Future<User> fetchUser(String userId) async {
     try {
@@ -98,6 +99,7 @@ class UserService implements IUserService {
       return User.fromJson(user);
     } catch (e) {
       print(e);
+      return null;
     }
   }
 }

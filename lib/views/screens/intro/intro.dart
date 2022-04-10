@@ -3,7 +3,6 @@ import 'package:squadchat/colors.dart';
 import 'package:squadchat/composition_root.dart';
 import 'package:squadchat/theme.dart';
 
-// This screen layout (changed to match the our app) is based on the one mentioned in the tutorial at: https://www.youtube.com/watch?v=uiJF-ShOLyo&t=92s
 class Intro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

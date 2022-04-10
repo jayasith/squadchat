@@ -26,83 +26,87 @@ class _LoginState extends State<Login> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: Expanded(
-          child: ListView(
-            children: [
-              const SizedBox(
-                height: 40,
-              ),
-              _logo(context),
-              const SizedBox(
-                height: 100,
-              ),
-              const Center(child: ProfileImageUpload()),
-              const SizedBox(
-                height: 150,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                child: CustomTextField(
-                  hint: 'What is your name?',
-                  height: 45,
-                  onchanged: (val) {
-                    _name = val;
-                  },
-                  inputAction: TextInputAction.done,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    final error = _validateInputs();
+        child: Row(
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  _logo(context),
+                  const SizedBox(
+                    height: 100,
+                  ),
+                  const Center(child: ProfileImageUpload()),
+                  const SizedBox(
+                    height: 150,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                    child: CustomTextField(
+                      hint: 'What is your name?',
+                      height: 45,
+                      onchanged: (val) {
+                        _name = val;
+                      },
+                      inputAction: TextInputAction.done,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final error = _validateInputs();
 
-                    if (error.isNotEmpty) {
-                      final snackBar = SnackBar(
-                          content: Text(
-                        error,
-                        style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
-                      ));
+                        if (error.isNotEmpty) {
+                          final snackBar = SnackBar(
+                              content: Text(
+                            error,
+                            style: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),
+                          ));
 
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      return;
-                    }
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          return;
+                        }
 
-                    await _connectSession();
-                  },
-                  child: BlocConsumer<LoginCubit, LoginState>(
-                      builder: (context, state) => state is Loading
-                          ? const Padding(
-                              padding: EdgeInsets.all(8),
-                              child: Center(
-                                  child: CircularProgressIndicator(
-                                color: Colors.white,
-                              )),
-                            )
-                          : Container(
-                              height: 45,
-                              alignment: Alignment.center,
-                              child: const Text(
-                                "Let's Connect",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                ),
-                              )),
-                      listener: (_, state) {
-                        if (state is LoginSuccess)
-                          // ignore: curly_braces_in_flow_control_structures
-                          widget.loginRouter
-                              .onSessionSuccess(context, state.user);
-                      }),
-                  style: ElevatedButton.styleFrom(
-                      primary: primary,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(45))),
-                ),
+                        await _connectSession();
+                      },
+                      child: BlocConsumer<LoginCubit, LoginState>(
+                          builder: (context, state) => state is Loading
+                              ? const Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: Center(
+                                      child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )),
+                                )
+                              : Container(
+                                  height: 45,
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    "Let's Connect",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  )),
+                          listener: (_, state) {
+                            if (state is LoginSuccess) {
+                              widget.loginRouter
+                                  .onSessionSuccess(context, state.user);
+                            }
+                          }),
+                      style: ElevatedButton.styleFrom(
+                          primary: primary,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(45))),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
